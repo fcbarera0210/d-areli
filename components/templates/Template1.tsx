@@ -218,11 +218,11 @@ const Template1 = () => {
               <p>D'Areli nace de la visión de crear un servicio de banquetería que trascienda lo convencional. Nos especializamos en eventos corporativos y sociales de alto impacto, donde la logística y el sabor se unen a la perfección.</p>
               <p>Nuestra cocina combina técnicas de vanguardia con el respeto absoluto por los ingredientes locales, asegurando que cada bocado cuente una historia de calidad y dedicación.</p>
             </div>
-            <div className="grid grid-cols-3 gap-6 pt-6">
+            <div className="grid grid-cols-3 gap-3 sm:gap-6 pt-6">
               {[{ label: "Años Exp.", val: "10+" }, { label: "Eventos", val: "500+" }, { label: "Calidad", val: "100%" }].map((stat, i) => (
-                <div key={i} className="text-center p-6 border border-neutral-800 bg-neutral-800/20 backdrop-blur-sm">
-                  <div className="text-3xl font-black text-white mb-2">{stat.val}</div>
-                  <div className="text-[10px] text-neutral-500 uppercase tracking-[0.3em] font-bold">{stat.label}</div>
+                <div key={i} className="text-center p-3 sm:p-6 border border-neutral-800 bg-neutral-800/20 backdrop-blur-sm min-w-0">
+                  <div className="text-lg sm:text-2xl md:text-3xl font-black text-white mb-1 sm:mb-2 truncate" title={stat.val}>{stat.val}</div>
+                  <div className="text-[8px] sm:text-[9px] md:text-[10px] text-neutral-500 uppercase tracking-[0.2em] sm:tracking-[0.3em] font-bold break-words line-clamp-2">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -313,27 +313,27 @@ const Template1 = () => {
 
       <AnimatePresence>
         {selectedMenu && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/90 backdrop-blur-xl" onClick={() => setSelectedMenu(null)}>
-            <motion.div initial={{ scale: 0.9, y: 30, opacity: 0 }} animate={{ scale: 1, y: 0, opacity: 1 }} exit={{ scale: 0.9, y: 30, opacity: 0 }} transition={{ type: "spring", damping: 25, stiffness: 300 }} className="bg-white w-full max-w-3xl shadow-2xl relative overflow-hidden" onClick={e => e.stopPropagation()}>
-              <div className={`h-3 w-full ${selectedMenu.color}`}></div>
-              <button type="button" onClick={() => setSelectedMenu(null)} className="absolute top-6 right-6 min-h-[44px] min-w-[44px] flex items-center justify-center p-2.5 hover:bg-neutral-100 rounded-full transition-colors z-10" aria-label="Cerrar"><X className="w-6 h-6" /></button>
-              <div className="p-10 md:p-20 text-center">
-                <h3 className="text-4xl font-black tracking-tight uppercase mb-10 leading-tight">{selectedMenu.title}</h3>
-                <div className="space-y-10 text-left">
-                  <div className="p-10 bg-neutral-50 border-l-8 border-neutral-900 italic text-neutral-600 text-lg leading-relaxed shadow-sm">"{selectedMenu.content}"</div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex items-start justify-center p-4 sm:p-6 overflow-y-auto bg-black/90 backdrop-blur-xl" onClick={() => setSelectedMenu(null)}>
+            <motion.div initial={{ scale: 0.9, y: 30, opacity: 0 }} animate={{ scale: 1, y: 0, opacity: 1 }} exit={{ scale: 0.9, y: 30, opacity: 0 }} transition={{ type: "spring", damping: 25, stiffness: 300 }} className="bg-white w-full max-w-3xl my-auto max-h-[calc(100vh-2rem)] flex flex-col shadow-2xl relative overflow-hidden shrink-0" onClick={e => e.stopPropagation()}>
+              <div className={`h-3 w-full shrink-0 ${selectedMenu.color}`}></div>
+              <button type="button" onClick={() => setSelectedMenu(null)} className="absolute top-4 right-4 sm:top-6 sm:right-6 min-h-[44px] min-w-[44px] flex items-center justify-center p-2.5 hover:bg-neutral-100 rounded-full transition-colors z-10 bg-white/90 sm:bg-transparent" aria-label="Cerrar"><X className="w-6 h-6" /></button>
+              <div className="p-6 sm:p-10 md:p-20 text-center overflow-y-auto min-h-0 flex-1">
+                <h3 className="text-2xl sm:text-4xl font-black tracking-tight uppercase mb-6 sm:mb-10 leading-tight">{selectedMenu.title}</h3>
+                <div className="space-y-6 sm:space-y-10 text-left">
+                  <div className="p-6 sm:p-10 bg-neutral-50 border-l-8 border-neutral-900 italic text-neutral-600 text-base sm:text-lg leading-relaxed shadow-sm">"{selectedMenu.content}"</div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 pt-4">
                     {["Servicio de garzones incluido", "Montaje y cristalería premium", "Protocolo de evento personalizado", "Gestión de tiempos garantizada"].map((txt, i) => (
-                      <div key={i} className="flex items-center gap-4 text-sm font-bold uppercase tracking-widest text-neutral-500">
-                        <div className="w-2 h-2 bg-neutral-900 rounded-full"></div>
+                      <div key={i} className="flex items-center gap-4 text-xs sm:text-sm font-bold uppercase tracking-widest text-neutral-500">
+                        <div className="w-2 h-2 bg-neutral-900 rounded-full shrink-0"></div>
                         {txt}
                       </div>
                     ))}
                   </div>
                 </div>
-                <div className="mt-16 flex flex-col md:flex-row justify-between items-center gap-10 pt-10 border-t border-neutral-100">
+                <div className="mt-10 sm:mt-16 flex flex-col md:flex-row justify-between items-center gap-6 sm:gap-10 pt-8 sm:pt-10 border-t border-neutral-100 shrink-0">
                   <div className="text-left">
                     <span className="block text-[10px] uppercase tracking-[0.3em] text-neutral-400 mb-1 font-black">Precio base por plato</span>
-                    <span className="text-4xl font-black">{selectedMenu.price}</span>
+                    <span className="text-2xl sm:text-4xl font-black">{selectedMenu.price}</span>
                   </div>
                   <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} type="button" className="w-full md:w-auto min-h-[44px] px-14 py-5 bg-black text-white text-[11px] uppercase tracking-[0.4em] font-black shadow-xl">Solicitar Presupuesto</motion.button>
                 </div>
