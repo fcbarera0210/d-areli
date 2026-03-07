@@ -1,13 +1,22 @@
 "use client";
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChefHat, Utensils, Phone, Mail, MapPin, ChevronRight, Menu, X, Star, Award, Clock } from 'lucide-react';
+import React, { useState, useCallback, useEffect } from 'react';
+import Image from 'next/image';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { ChefHat, Utensils, Phone, Mail, MapPin, ChevronRight, Menu, X, Award, Clock, Instagram, Facebook } from 'lucide-react';
 
-const fadeInSection = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
+type LunchMenuItem = {
+  title: string;
+  color: string;
+  bg: string;
+  textColor: string;
+  items: string[];
 };
+
+const getFadeInSection = (duration: number) => ({
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration, ease: 'easeOut' } }
+});
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -19,13 +28,26 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 }
 };
 
+const QUIENES_SOMOS_IMAGE = 'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=800&auto=format&fit=crop';
+
 const Template2 = () => {
   const [activeTab, setActiveTab] = useState('banqueteria');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [selectedLunchMenu, setSelectedLunchMenu] = useState<LunchMenuItem | null>(null);
+  const reducedMotion = useReducedMotion();
+  const motionDuration = reducedMotion ? 0.2 : 0.8;
 
   const scrollToServicios = () => {
     document.getElementById('servicios')?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  const closeLunchModal = useCallback(() => setSelectedLunchMenu(null), []);
+  useEffect(() => {
+    if (!selectedLunchMenu) return;
+    const onEscape = (e: KeyboardEvent) => { if (e.key === 'Escape') closeLunchModal(); };
+    window.addEventListener('keydown', onEscape);
+    return () => window.removeEventListener('keydown', onEscape);
+  }, [selectedLunchMenu, closeLunchModal]);
 
   const lunchMenus = [
     { title: "MENÚ EMPRESAS", color: "border-red-500", bg: "bg-red-500", textColor: "text-red-600", items: ["Aperitivos y Coctelería: Pisco Sour, Mango Sour, Empanaditas", "Almuerzo: Buffet de asados (Pollo, Cerdo, Vacuno)", "Postre: Pie de Limón, Torta Helada"] },
@@ -55,7 +77,7 @@ const Template2 = () => {
               {['inicio', 'quienes-somos', 'servicios'].map((item) => (
                 <motion.a key={item} href={`#${item}`} whileHover={{ y: -2 }} className="text-sm font-medium hover:text-red-600 transition-colors capitalize">{item.replace('-', ' ')}</motion.a>
               ))}
-              <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} type="button" className="bg-black text-white px-6 py-2 rounded-full text-sm font-medium hover:shadow-lg transition-all">Contactar</motion.button>
+              <motion.a href="#contacto" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="bg-black text-white px-6 py-2 rounded-full text-sm font-medium hover:shadow-lg transition-all inline-block">Contactar</motion.a>
             </div>
             <button type="button" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>{isMenuOpen ? <X /> : <Menu />}</button>
           </div>
@@ -63,20 +85,20 @@ const Template2 = () => {
       </nav>
 
       <section id="inicio" className="relative h-screen flex items-center justify-center overflow-hidden bg-black">
-        <motion.div initial={{ scale: 1.2, opacity: 0 }} animate={{ scale: 1, opacity: 0.4 }} transition={{ duration: 2 }} className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-400 via-slate-900 to-black" />
+        <motion.div initial={{ scale: 1.2, opacity: 0 }} animate={{ scale: 1, opacity: 0.4 }} transition={{ duration: reducedMotion ? 0.3 : 2 }} className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-400 via-slate-900 to-black" />
         <div className="relative z-10 text-center px-4 max-w-4xl">
-          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.8 }} className="text-5xl md:text-8xl font-bold text-white mb-6 tracking-tight">
+          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: reducedMotion ? 0 : 0.5, duration: motionDuration }} className="text-5xl md:text-8xl font-bold text-white mb-6 tracking-tight">
             Arte en cada <br /><span className="italic font-serif text-slate-300 font-light underline decoration-red-500/30 underline-offset-8">Bocado</span>
           </motion.h1>
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1, duration: 1 }} className="text-xl text-slate-300 mb-10 font-light">Servicios gastronómicos de alta gama para empresas y celebraciones únicas.</motion.p>
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.3 }} className="flex flex-col sm:flex-row gap-4 justify-center">
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: reducedMotion ? 0 : 1, duration: motionDuration }} className="text-xl text-slate-300 mb-10 font-light">Servicios gastronómicos de alta gama para empresas y celebraciones únicas.</motion.p>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: reducedMotion ? 0 : 1.3, duration: motionDuration }} className="flex flex-col sm:flex-row gap-4 justify-center">
             <button type="button" onClick={() => { scrollToServicios(); setActiveTab('banqueteria'); }} className="px-8 py-4 bg-white text-black font-bold rounded-full hover:bg-slate-100 transition-all flex items-center justify-center gap-2 shadow-xl">Banquetería Gala <ChevronRight size={18}/></button>
             <button type="button" onClick={() => { scrollToServicios(); setActiveTab('almuerzos'); }} className="px-8 py-4 border border-white/30 text-white font-bold rounded-full hover:bg-white/10 transition-colors flex items-center justify-center gap-2 backdrop-blur-sm">Menús Almuerzo <ChevronRight size={18}/></button>
           </motion.div>
         </div>
       </section>
 
-      <motion.section id="quienes-somos" initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeInSection} className="py-24 bg-white">
+      <motion.section id="quienes-somos" initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-100px' }} variants={getFadeInSection(motionDuration)} className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div className="space-y-6">
@@ -96,11 +118,11 @@ const Template2 = () => {
                 </motion.div>
               </div>
             </div>
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 1 }} className="relative">
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: reducedMotion ? 0.2 : 1 }} className="relative">
               <div className="aspect-[4/5] rounded-[2rem] bg-slate-200 overflow-hidden shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-700">
-                <div className="w-full h-full bg-[url('https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center" />
+                <Image src={QUIENES_SOMOS_IMAGE} alt="" width={800} height={1000} className="w-full h-full object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
               </div>
-              <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} className="absolute -bottom-6 -left-6 bg-white text-black p-10 rounded-3xl shadow-2xl border border-slate-100">
+              <motion.div animate={reducedMotion ? undefined : { y: [0, -10, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }} className="absolute -bottom-6 -left-6 bg-white text-black p-10 rounded-3xl shadow-2xl border border-slate-100">
                 <p className="text-5xl font-black text-red-600">10+</p>
                 <p className="text-xs font-bold uppercase tracking-widest opacity-50">Años de Sabor</p>
               </motion.div>
@@ -124,7 +146,7 @@ const Template2 = () => {
           </motion.div>
           <AnimatePresence mode="wait">
             {activeTab === 'banqueteria' ? (
-              <motion.div key="gala" initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 50 }} transition={{ duration: 0.5 }} className="bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-slate-100">
+              <motion.div key="gala" initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 50 }} transition={{ duration: motionDuration }} className="bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-slate-100">
                 <div className="bg-slate-50 p-16 text-center border-b border-slate-100 relative">
                   <div className="absolute top-10 left-1/2 -translate-x-1/2 opacity-5"><ChefHat size={120} /></div>
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="flex justify-center mb-6 relative z-10">
@@ -157,6 +179,10 @@ const Template2 = () => {
                     <div className="flex items-baseline gap-2"><span className="text-5xl font-black">$23.000</span><span className="text-xl font-light opacity-30">CLP</span></div>
                   </div>
                   <div className="flex flex-col sm:flex-row items-center gap-6">
+                    <div className="text-center sm:hidden order-first">
+                      <p className="text-xs font-bold text-red-400 uppercase mb-1">Servicios Incluidos</p>
+                      <p className="text-[10px] opacity-40">Mobiliario, Loza, Garzones y Cristalería</p>
+                    </div>
                     <div className="text-center sm:text-right border-l border-white/10 pl-6 hidden sm:block">
                       <p className="text-xs font-bold text-red-400 uppercase mb-1">Servicios Incluidos</p>
                       <p className="text-[10px] opacity-40">Mobiliario, Loza, Garzones y Cristalería</p>
@@ -166,7 +192,7 @@ const Template2 = () => {
                 </div>
               </motion.div>
             ) : (
-              <motion.div key="lunch" initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -50 }} transition={{ duration: 0.5 }} className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <motion.div key="lunch" initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -50 }} transition={{ duration: motionDuration }} className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {lunchMenus.map((menu, idx) => (
                   <motion.div key={idx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} whileHover={{ y: -10 }} className={`bg-white rounded-[2rem] shadow-xl border-b-[12px] ${menu.color} overflow-hidden group transition-all duration-300`}>
                     <div className={`${menu.bg} p-8 text-white text-center relative overflow-hidden`}>
@@ -185,7 +211,7 @@ const Template2 = () => {
                           <p className="text-[9px] uppercase font-black text-slate-400 tracking-tighter mb-1">Valor Unitario</p>
                           <p className={`text-2xl font-black ${menu.textColor}`}>$23.000 <span className="text-xs opacity-50">+IVA</span></p>
                         </div>
-                        <motion.button whileHover={{ rotate: 90 }} type="button" className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg ${menu.bg}`}><ChevronRight size={24} /></motion.button>
+                        <motion.button whileHover={{ rotate: 90 }} whileTap={{ scale: 0.98 }} type="button" onClick={() => setSelectedLunchMenu(menu)} aria-label="Ver detalles del menú" className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg ${menu.bg}`}><ChevronRight size={24} /></motion.button>
                       </div>
                     </div>
                   </motion.div>
@@ -196,20 +222,84 @@ const Template2 = () => {
         </div>
       </section>
 
+      <motion.section id="contacto" initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={getFadeInSection(motionDuration)} className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div className="max-w-6xl mx-auto bg-slate-50 rounded-[3rem] shadow-xl border border-slate-100 overflow-hidden flex flex-col md:flex-row">
+            <div className="md:w-2/5 bg-slate-900 text-slate-300 p-8 md:p-12 lg:p-16 space-y-8 md:space-y-12">
+              <div className="space-y-4">
+                <h3 className="text-2xl md:text-3xl font-black tracking-tight uppercase text-white">Hablemos de tu evento</h3>
+                <p className="text-slate-400 font-light text-sm tracking-wide">Nuestro equipo de asesores está listo para dar vida a tus ideas.</p>
+              </div>
+              <div className="space-y-6">
+                {[
+                  { Icon: Phone, label: 'Llamadas / WhatsApp', val: '+56 9 488 355 22' },
+                  { Icon: Mail, label: 'Correo Electrónico', val: 'arelisaez@gmail.com' },
+                  { Icon: MapPin, label: 'Área de Cobertura', val: 'Región Metropolitana y Alrededores' }
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-4">
+                    <div className="p-2.5 bg-slate-800 rounded-2xl shrink-0"><item.Icon className="w-5 h-5 text-red-500" /></div>
+                    <div>
+                      <div className="text-[10px] uppercase text-slate-500 tracking-[0.3em] mb-1 font-black">{item.label}</div>
+                      <div className="text-sm font-light text-slate-300">{item.val}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="pt-6 border-t border-slate-800">
+                <h4 className="text-white font-black mb-4 uppercase text-[10px] tracking-[0.3em]">Horarios</h4>
+                <p className="text-xs text-slate-400">Lun - Vie: <span className="text-white font-medium">09:00 - 19:00</span></p>
+                <p className="text-xs text-slate-400 mt-1">Sáb: <span className="text-white font-medium">Eventos VIP</span></p>
+              </div>
+            </div>
+            <div className="md:w-3/5 p-8 md:p-12 lg:p-16">
+              <form className="space-y-6 md:space-y-8" onSubmit={(e) => e.preventDefault()}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="relative">
+                    <input type="text" id="t2-name" className="peer w-full py-3.5 px-4 bg-white border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all placeholder-transparent" placeholder="Nombre" />
+                    <label htmlFor="t2-name" className="absolute left-4 -top-2.5 text-[10px] uppercase tracking-[0.2em] font-black text-slate-400 bg-white px-2 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:top-3.5 peer-placeholder-shown:font-normal peer-focus:-top-2.5 peer-focus:text-[10px] peer-focus:font-black peer-focus:text-red-600">Nombre Completo</label>
+                  </div>
+                  <div className="relative">
+                    <input type="email" id="t2-email" className="peer w-full py-3.5 px-4 bg-white border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all placeholder-transparent" placeholder="Email" />
+                    <label htmlFor="t2-email" className="absolute left-4 -top-2.5 text-[10px] uppercase tracking-[0.2em] font-black text-slate-400 bg-white px-2 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:top-3.5 peer-placeholder-shown:font-normal peer-focus:-top-2.5 peer-focus:text-[10px] peer-focus:font-black peer-focus:text-red-600">Correo Electrónico</label>
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="t2-service" className="block text-[10px] uppercase tracking-[0.2em] font-black text-slate-400 mb-2">Tipo de Servicio</label>
+                  <select id="t2-service" className="w-full py-3.5 px-4 bg-white border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all text-sm font-medium cursor-pointer appearance-none">
+                    <option value="">Seleccione una opción</option>
+                    <option>Banquetería Gala</option>
+                    <option>Almuerzo Corporativo</option>
+                    <option>Matrimonio</option>
+                    <option>Otro Evento Social</option>
+                  </select>
+                </div>
+                <div className="relative">
+                  <textarea id="t2-msg" rows={3} className="peer w-full py-3.5 px-4 bg-white border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all placeholder-transparent resize-none" placeholder="Mensaje" />
+                  <label htmlFor="t2-msg" className="absolute left-4 -top-2.5 text-[10px] uppercase tracking-[0.2em] font-black text-slate-400 bg-white px-2 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:top-3.5 peer-placeholder-shown:font-normal peer-focus:-top-2.5 peer-focus:text-[10px] peer-focus:font-black peer-focus:text-red-600">¿Cómo podemos ayudarte?</label>
+                </div>
+                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" className="w-full sm:w-auto min-h-[44px] px-10 py-4 bg-red-600 text-white rounded-2xl text-xs font-black uppercase tracking-[0.3em] hover:bg-red-700 transition-colors shadow-lg shadow-red-600/20">Enviar Solicitud</motion.button>
+              </form>
+            </div>
+          </motion.div>
+        </div>
+      </motion.section>
+
       <footer className="bg-slate-900 text-slate-400 py-20 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-600 via-white to-red-600" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-16 mb-16">
-            <div className="col-span-2">
+          <div className="grid md:grid-cols-3 gap-16 mb-16">
+            <div className="md:col-span-2">
               <div className="flex items-center gap-2 text-white mb-8">
                 <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black font-black">D</div>
                 <span className="text-2xl font-black tracking-tighter uppercase italic">D'Areli</span>
               </div>
               <p className="max-w-md text-sm font-light leading-relaxed mb-8 text-slate-500">La gastronomía es el lenguaje del cuidado. En cada plato ponemos nuestra reputación y pasión para asegurar que su evento sea, sencillamente, perfecto.</p>
               <div className="flex gap-4">
-                {[1,2,3].map((i) => (
-                  <motion.a key={i} href="#" whileHover={{ y: -5, backgroundColor: "#fff", color: "#000" }} className="w-12 h-12 rounded-2xl border border-slate-800 flex items-center justify-center transition-all"><Star size={20}/></motion.a>
-                ))}
+                <motion.a href="#" target="_blank" rel="noopener noreferrer" whileHover={{ y: -5, backgroundColor: '#fff', color: '#000' }} className="w-12 h-12 rounded-2xl border border-slate-800 flex items-center justify-center transition-all text-slate-400" aria-label="Instagram"><Instagram size={20} /></motion.a>
+                <motion.a href="#" target="_blank" rel="noopener noreferrer" whileHover={{ y: -5, backgroundColor: '#fff', color: '#000' }} className="w-12 h-12 rounded-2xl border border-slate-800 flex items-center justify-center transition-all text-slate-400" aria-label="Facebook"><Facebook size={20} /></motion.a>
+                <motion.a href="https://wa.me/56948835522" target="_blank" rel="noopener noreferrer" whileHover={{ y: -5, backgroundColor: '#fff', color: '#000' }} className="w-12 h-12 rounded-2xl border border-slate-800 flex items-center justify-center transition-all text-slate-400" aria-label="WhatsApp">
+                  <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor" aria-hidden><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                </motion.a>
               </div>
             </div>
             <div>
@@ -220,12 +310,6 @@ const Template2 = () => {
                 <li className="flex items-center gap-3 hover:text-white transition-colors cursor-pointer"><MapPin size={14} className="text-red-600" /> Santiago, Chile</li>
               </ul>
             </div>
-            <div className="bg-white/5 p-8 rounded-3xl border border-white/10 backdrop-blur-sm">
-              <h4 className="text-white font-black mb-6 uppercase text-[10px] tracking-[0.3em]">Operaciones</h4>
-              <p className="text-xs mb-2">Lun - Vie: <span className="text-white">09:00 - 19:00</span></p>
-              <p className="text-xs mb-6">Sáb: <span className="text-white">Eventos VIP</span></p>
-              <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="button" className="bg-red-600 text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest w-full shadow-lg shadow-red-600/20">Hablar con un Chef</motion.button>
-            </div>
           </div>
           <div className="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] uppercase tracking-[0.2em] font-bold">
             <p>&copy; 2024 D'Areli Banquetería - Calidad Superior</p>
@@ -235,8 +319,48 @@ const Template2 = () => {
       </footer>
 
       <AnimatePresence>
+        {selectedLunchMenu && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: reducedMotion ? 0.15 : 0.25 }}
+            className="fixed inset-0 z-[100] flex items-start justify-center p-4 sm:p-6 overflow-y-auto bg-slate-900/95 backdrop-blur-sm"
+            onClick={closeLunchModal}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300, duration: reducedMotion ? 0.2 : undefined }}
+              className={`relative w-full max-w-[calc(100vw-2rem)] sm:max-w-lg my-4 sm:my-8 bg-white rounded-[2rem] shadow-2xl overflow-hidden border-b-[12px] ${selectedLunchMenu.color} shrink-0`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className={`h-2 ${selectedLunchMenu.bg}`} aria-hidden />
+              <button type="button" onClick={closeLunchModal} className="absolute top-4 right-4 min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-2xl hover:bg-slate-100 transition-colors z-10" aria-label="Cerrar"><X className="w-6 h-6 text-slate-600" /></button>
+              <div className="p-6 sm:p-10 overflow-y-auto max-h-[calc(100vh-8rem)]">
+                <h3 className="text-2xl font-black tracking-tight uppercase mb-6 pr-12 leading-tight">{selectedLunchMenu.title}</h3>
+                <ul className="space-y-4 mb-8">
+                  {selectedLunchMenu.items.map((item, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <ChevronRight size={14} className="mt-1.5 text-slate-300 shrink-0" />
+                      <span className="text-slate-600 font-light text-sm leading-relaxed">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="pt-6 border-t border-slate-100">
+                  <p className="text-[9px] uppercase font-black text-slate-400 tracking-tighter mb-1">Valor Unitario</p>
+                  <p className={`text-2xl font-black ${selectedLunchMenu.textColor}`}>$23.000 <span className="text-xs opacity-50">+IVA</span></p>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
         {isMenuOpen && (
-          <motion.div initial={{ opacity: 0, x: '100%' }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: '100%' }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="fixed inset-0 z-[60] bg-slate-900 flex flex-col items-center justify-center text-white">
+          <motion.div initial={{ opacity: 0, x: '100%' }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: '100%' }} transition={{ type: 'spring', damping: 25, stiffness: reducedMotion ? 400 : 200 }} className="fixed inset-0 z-[60] bg-slate-900 flex flex-col items-center justify-center text-white">
             <button type="button" className="absolute top-8 right-8 text-white/50 hover:text-white transition-colors" onClick={() => setIsMenuOpen(false)}><X size={40} /></button>
             <nav className="flex flex-col gap-10 text-4xl font-black uppercase italic text-center">
               {['inicio', 'servicios', 'quienes somos', 'contacto'].map((item, i) => (
