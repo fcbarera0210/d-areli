@@ -18,6 +18,7 @@ const HERO_IMAGE_URL = 'https://images.unsplash.com/photo-1559339352-11d035aa65d
 const HERO_IMAGE_FALLBACK = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=800';
 const QUIENES_SOMOS_IMAGE = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&q=80&w=800';
 
+type GroupMenuSection = { category: string; items: string };
 type GroupMenuItem = {
   id: string;
   title: string;
@@ -25,6 +26,8 @@ type GroupMenuItem = {
   accent: string;
   content: string;
   price: string;
+  priceNote?: string;
+  detailSections: GroupMenuSection[];
 };
 
 const Template1 = () => {
@@ -54,21 +57,75 @@ const Template1 = () => {
     title: "MENÚ GALA",
     subtitle: "Elegancia y Exclusividad",
     sections: [
-      { category: "APERITIVOS", items: "Pisco sour, Mango sour, Bebidas, Jugo natural, Vino espumante, Cerveza" },
-      { category: "BOCADOS", items: "4 canapés variados, 2 ceviches de reineta, 1 pastel de jaiba, 3 empanaditas de queso, 1 brocheta de cerdo, 2 pastelitos dulces" },
-      { category: "ENTRADA", items: "Mousse de pollo en palta natural y dressing de yogurth, O fantasía marina (pastel de jaiba en fondos de alcachofa y lechuga marina)" },
-      { category: "PLATO PRINCIPAL", items: "Mechada de vacuno cocinada en su jugo con pastelera de choclo y papas crocantes, O plateada de vacuno con salsa mignon y papas rústicas al perejil" },
-      { category: "BUFFET DE POSTRES", items: "Suspiro limeño, Mousse de chocolate, Cheesecake de frutilla, Pie de limón, Waffles y helado, Leche asada" }
+      { category: "APERITIVOS", items: "Pisco sour; Mango sour; Bebidas; Jugo natural; Vino espumante; Cerveza." },
+      { category: "BOCADOS", items: "4 canapés variados; 2 ceviches de reineta; 1 pastel de jaiba; 3 empanaditas de queso; 1 brocheta de cerdo; 2 pastelitos dulces." },
+      { category: "ENTRADA", items: "Mousse de pollo en palta natural y dressing de yogurth, O Fantasía marina (pastel de jaiba en fondos de alcachofa y lechuga marina)." },
+      { category: "PLATO PRINCIPAL", items: "Mechada de vacuno cocinada en su jugo con pastelera de choclo y papas crocantes. Plateada de vacuno con salsa mignon y papas rústicas al perejil." },
+      { category: "MENÚ VEGETARIANO", items: "Quiche de verduras con salteado de vegetales." },
+      { category: "LÍQUIDOS", items: "Vinos, bebidas y jugos durante el servicio. Té, café, agua de hierbas." },
+      { category: "BUFFET DE POSTRES", items: "Suspiro limeño; Mousse de chocolate; Cheesecake de frutilla; Pie de limón; Waffles y helado; Leche asada." },
+      { category: "TRASNOCHE", items: "Consomé de ave; Tapaditos." }
     ],
     price: "$23.000",
-    conditions: "Mínimo 80 personas. Reserva con 50%."
+    serviceIncludes: "Mesas y sillas (10 personas); Loza; Garzones; Mantelería; Cristalería; Cubiertos.",
+    conditions: "Se reserva con un 50% del total final de cada evento. Los abonos no son devueltos, sólo se puede reagendar la fecha. Mínimo: 80 personas.",
+    additionalServices: "Robot led / Dj y amplificación / Cámara 360.",
+    priceWithAddons: "$30.000 por persona"
   };
 
   const groupMenus: GroupMenuItem[] = [
-    { id: 'empresas', title: "MENÚ EMPRESAS", color: "bg-red-500", accent: "border-red-500", content: "Ideal para eventos corporativos y almuerzos ejecutivos con buffet de asados.", price: "$23.800 + IVA" },
-    { id: 'campestre', title: "MENÚ CAMPESTRE", color: "bg-blue-500", accent: "border-blue-500", content: "Tradición y sabor chileno: costillar, prietas, longaniza y buffet criollo.", price: "$23.000 + IVA" },
-    { id: 'matrimonio', title: "MENÚ MATRIMONIO", color: "bg-amber-500", accent: "border-amber-500", content: "Sofisticación para tu gran día: plateada de vacuno o cerdo al horno.", price: "$27.000 + IVA" },
-    { id: 'matrimonio-vip', title: "MENÚ MATRIMONIO VIP", color: "bg-teal-600", accent: "border-teal-600", content: "Experiencia premium: lomo vetado a las brasas y cordero asado.", price: "$30.000 + IVA" }
+    {
+      id: 'empresas', title: "MENÚ EMPRESAS", color: "bg-red-500", accent: "border-red-500",
+      content: "Pisco/Mango Sour, cerveza y coctelería. Almuerzo buffet de asados. Postre pie de limón y torta-helado. Opción bar abierto.",
+      price: "$23.800 + IVA", priceNote: "$35.700 + IVA (*) con bar abierto barra nacional",
+      detailSections: [
+        { category: "APERITIVOS Y COCTELERÍA", items: "Pisco Sour, Mango Sour, Cerveza, 3 empanaditas de queso, 2 ceviches de reineta, 2 pastelitos dulces, 2 tutitos de ala, 1 pastel de jaiba." },
+        { category: "ALMUERZO", items: "Buffet de asados: pollo, cerdo y vacuno a la parrilla. Acompañado de papas cocidas, ensaladas (tomate, lechuga, choclo), pan, pebre." },
+        { category: "POSTRE", items: "Pie de limón, Torta, Helado." },
+        { category: "DETALLES DEL SERVICIO", items: "Servicio incluye: Garzones y cocineros, mesas y sillas vestidas para la ocasión, loza, cristalería, cubiertos. Valor por persona: $23.800 + IVA, $35.700 + IVA (*). (*) Opción bar abierto barra nacional: Micheladas, Pisco, Whisky, Aperol, Espumante, Sours." }
+      ]
+    },
+    {
+      id: 'campestre', title: "MENÚ CAMPESTRE", color: "bg-blue-500", accent: "border-blue-500",
+      content: "Aperitivos y ponches, coctelería criolla. Plato de fondo: buffet de asados criollos. Postres y trasnoche.",
+      price: "$23.000 + IVA",
+      detailSections: [
+        { category: "APERITIVOS Y BEBESTIBLES", items: "Pisco o Mango Sour, Cerveza, variedad de ponches, jugos naturales, bebidas, agua detox." },
+        { category: "COCTELERÍA", items: "3 empanadas de queso o pino, 3 sopaipillas con pebre, 2 ceviche de reineta, Chancho en piedra, Arrollado de huaso, 2 tutitos de pollo al horno." },
+        { category: "PLATO DE FONDO", items: "Buffet de asados criollos: pollo, cerdo, vacuno, prietas, longaniza. Acompañado de papas cocidas, pan, pebre, vinos y bebidas durante el servicio." },
+        { category: "BUFFET DE POSTRES", items: "Leche asada, Mote con huesillos, Arroz con leche, Panqueques, Frutas." },
+        { category: "TRASNOCHE", items: "Consomé, Tapaditos (ave, queso, salame)." },
+        { category: "DETALLES DEL SERVICIO", items: "Servicio incluye: Mobiliario, personal de servicio. Valor por persona: $23.000 + IVA." }
+      ]
+    },
+    {
+      id: 'matrimonio', title: "MENÚ MATRIMONIO", color: "bg-amber-500", accent: "border-amber-500",
+      content: "Coctelería y entrada elegante. Fondo: plateada de vacuno o cerdo al horno. Postres y trasnoche.",
+      price: "$27.000 + IVA",
+      detailSections: [
+        { category: "APERITIVOS", items: "1 Pisco o Mango Sour, 1 espumante, variedad de ponches, jugos naturales y bebidas." },
+        { category: "COCTELERÍA", items: "4 canapés variados, 2 ceviches de reineta, 3 empanaditas de queso, 2 brochetas, 2 sopaipillas de coctel." },
+        { category: "ENTRADA", items: "1 Rollito de jamón York en hojas verdes; Camarón y palmitos en cama de lechuga fresca; Palta rellena en hojas verdes y dressing de yogurth." },
+        { category: "FONDO", items: "Plateada de vacuno en su jugo acompañada de papas rústicas. Cerdo al horno con papas duquesas." },
+        { category: "POSTRES", items: "Mousse de manjar, Cheesecake de maracuyá, Pie de limón, Tiramisú, Frutas frescas." },
+        { category: "TRASNOCHE", items: "Tapaditos surtidos, Consomé de ave." },
+        { category: "DETALLES DEL SERVICIO", items: "Servicio incluye: Mobiliario, personal de servicio, decoración centro de mesas. Valor por persona: $27.000 + IVA." }
+      ]
+    },
+    {
+      id: 'matrimonio-vip', title: "MENÚ MATRIMONIO VIP", color: "bg-teal-600", accent: "border-teal-600",
+      content: "Coctelería premium. Entrada: ceviche, mousse o fantasía marina. Fondo: lomo vetado o plateada. Trasnoche cordero/costillar.",
+      price: "$30.000 + IVA",
+      detailSections: [
+        { category: "APERITIVOS", items: "Pisco o Mango Sour, variedad de espumantes, Late Harvest, Cerveza Corona, bebidas y jugos." },
+        { category: "COCTELERÍA", items: "1 pastel de jaiba, 2 bocados de ceviche, 2 empanaditas de queso, 2 pinchos de pollo a la mostaza, 2 pastelitos dulces." },
+        { category: "ENTRADA", items: "Ceviche de reineta con crostini al ajillo en hojas verdes. Mousse de pollo en palta natural y dressing de yogurth. Fantasía marina: fondos de alcachofa relleno de puré de jaiba." },
+        { category: "FONDO", items: "Lomo vetado a las brasas con papas rústicas. Plateada de vacuno en su jugo con pastelera de choclo." },
+        { category: "POSTRES", items: "Cheesecake de frutilla, Pie de limón, Leche asada, Panqueques, Mousse de chocolate, Panna cotta de café." },
+        { category: "TRASNOCHE (MENÚ PARA 100 PERS)", items: "Cordero asado, Costillar asado, Consomé, Tapaditos." },
+        { category: "DETALLES DEL SERVICIO", items: "Servicio incluye: Mobiliario mesas y sillas, decoración centro de mesas. Valor por persona: $30.000 + IVA." }
+      ]
+    }
   ];
 
   return (
@@ -178,13 +235,29 @@ const Template1 = () => {
                     </motion.div>
                   ))}
                 </motion.div>
-                <div className="mt-20 pt-10 border-t border-neutral-200 flex flex-col md:flex-row justify-between items-center gap-8">
-                  <div className="text-center md:text-left">
-                    <span className="block text-[10px] uppercase tracking-[0.3em] text-neutral-400 mb-2 font-bold">Inversión por Persona</span>
-                    <span className="text-3xl font-black">{galaMenu.price}</span>
-                    <p className="text-[10px] text-neutral-400 mt-1 uppercase font-medium">{galaMenu.conditions}</p>
+                <div className="mt-20 pt-10 border-t border-neutral-200 space-y-6">
+                  <div className="grid md:grid-cols-2 gap-6 text-left">
+                    <div>
+                      <span className="block text-[10px] uppercase tracking-[0.3em] text-neutral-400 mb-1 font-bold">Valor por persona</span>
+                      <span className="text-2xl font-black">{galaMenu.price}</span>
+                    </div>
+                    <div>
+                      <span className="block text-[10px] uppercase tracking-[0.3em] text-neutral-400 mb-1 font-bold">Servicio incluye</span>
+                      <p className="text-sm text-neutral-600 font-light">{galaMenu.serviceIncludes}</p>
+                    </div>
+                    <div className="md:col-span-2">
+                      <span className="block text-[10px] uppercase tracking-[0.3em] text-neutral-400 mb-1 font-bold">Condiciones</span>
+                      <p className="text-sm text-neutral-600 font-light">{galaMenu.conditions}</p>
+                    </div>
+                    <div className="md:col-span-2">
+                      <span className="block text-[10px] uppercase tracking-[0.3em] text-neutral-400 mb-1 font-bold">Servicios adicionales</span>
+                      <p className="text-sm text-neutral-600 font-light">{galaMenu.additionalServices}</p>
+                      <p className="text-sm font-black mt-1">Valor con adicionales: {galaMenu.priceWithAddons}</p>
+                    </div>
                   </div>
-                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="button" className="min-h-[44px] px-12 py-5 bg-black text-white text-[10px] uppercase tracking-[0.3em] font-black hover:bg-neutral-800 transition-all shadow-xl">Solicitar Dossier Completo</motion.button>
+                  <div className="flex justify-center md:justify-end">
+                    <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="button" className="min-h-[44px] px-12 py-5 bg-black text-white text-[10px] uppercase tracking-[0.3em] font-black hover:bg-neutral-800 transition-all shadow-xl">Solicitar Dossier Completo</motion.button>
+                  </div>
                 </div>
               </motion.div>
             ) : (
@@ -251,7 +324,7 @@ const Template1 = () => {
                 <p className="text-neutral-400 font-light text-sm tracking-wide">Nuestro equipo de asesores está listo para dar vida a tus ideas.</p>
               </div>
               <div className="space-y-10">
-                {[{ Icon: Phone, label: "Llamadas / WhatsApp", val: "+56 9 488 355 22" }, { Icon: Mail, label: "Correo Electrónico", val: "arelisaez@gmail.com" }, { Icon: MapPin, label: "Área de Cobertura", val: "Región Metropolitana y Alrededores" }].map((item, i) => (
+                {[{ Icon: Phone, label: "Llamadas / WhatsApp", val: "+56 9 488 355 22" }, { Icon: Mail, label: "Correo Electrónico", val: "arelisaez@gmail.com" }, { Icon: MapPin, label: "Área de Cobertura", val: "Romeral, Región del Maule y alrededores" }].map((item, i) => (
                   <div key={i} className="flex items-start gap-5">
                     <div className="p-3 bg-neutral-800 rounded-full"><item.Icon className="w-5 h-5 text-neutral-400" /></div>
                     <div>
@@ -306,8 +379,8 @@ const Template1 = () => {
             <a href="#quienes-somos" className="min-h-[44px] inline-flex items-center hover:text-black transition-colors">Nosotros</a>
             <a href="#contacto" className="min-h-[44px] inline-flex items-center hover:text-black transition-colors">Contacto</a>
           </div>
-          <p className="text-[10px] text-neutral-400 uppercase tracking-[0.5em] font-medium">Gastronomía de Autor • Santiago, Chile</p>
-          <div className="pt-12 text-neutral-300 text-[9px] uppercase tracking-[0.4em] font-bold border-t border-neutral-200 max-w-lg mx-auto">© 2024 GRUPO D'ARELI. TODOS LOS DERECHOS RESERVADOS.</div>
+          <p className="text-[10px] text-neutral-400 uppercase tracking-[0.5em] font-medium">Gastronomía de Autor • Romeral, Región del Maule, Chile</p>
+          <div className="pt-12 text-neutral-300 text-[9px] uppercase tracking-[0.4em] font-bold border-t border-neutral-200 max-w-lg mx-auto">© 2026 GRUPO D&apos;ARELI. TODOS LOS DERECHOS RESERVADOS. Web diseñada y desarrollada por <a href="https://charlideas.vercel.app/" target="_blank" rel="noopener noreferrer" className="underline hover:text-neutral-500 transition-colors">Charl!deas</a>.</div>
         </div>
       </footer>
 
@@ -317,23 +390,21 @@ const Template1 = () => {
             <motion.div initial={{ scale: 0.9, y: 30, opacity: 0 }} animate={{ scale: 1, y: 0, opacity: 1 }} exit={{ scale: 0.9, y: 30, opacity: 0 }} transition={{ type: "spring", damping: 25, stiffness: 300 }} className="bg-white w-full max-w-3xl my-auto max-h-[calc(100vh-2rem)] flex flex-col shadow-2xl relative overflow-hidden shrink-0" onClick={e => e.stopPropagation()}>
               <div className={`h-3 w-full shrink-0 ${selectedMenu.color}`}></div>
               <button type="button" onClick={() => setSelectedMenu(null)} className="absolute top-4 right-4 sm:top-6 sm:right-6 min-h-[44px] min-w-[44px] flex items-center justify-center p-2.5 hover:bg-neutral-100 rounded-full transition-colors z-10 bg-white/90 sm:bg-transparent" aria-label="Cerrar"><X className="w-6 h-6" /></button>
-              <div className="p-6 sm:p-10 md:p-20 text-center overflow-y-auto min-h-0 flex-1">
-                <h3 className="text-2xl sm:text-4xl font-black tracking-tight uppercase mb-6 sm:mb-10 leading-tight">{selectedMenu.title}</h3>
-                <div className="space-y-6 sm:space-y-10 text-left">
-                  <div className="p-6 sm:p-10 bg-neutral-50 border-l-8 border-neutral-900 italic text-neutral-600 text-base sm:text-lg leading-relaxed shadow-sm">"{selectedMenu.content}"</div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 pt-4">
-                    {["Servicio de garzones incluido", "Montaje y cristalería premium", "Protocolo de evento personalizado", "Gestión de tiempos garantizada"].map((txt, i) => (
-                      <div key={i} className="flex items-center gap-4 text-xs sm:text-sm font-bold uppercase tracking-widest text-neutral-500">
-                        <div className="w-2 h-2 bg-neutral-900 rounded-full shrink-0"></div>
-                        {txt}
-                      </div>
-                    ))}
-                  </div>
+              <div className="p-6 sm:p-10 md:p-20 overflow-y-auto min-h-0 flex-1">
+                <h3 className="text-2xl sm:text-4xl font-black tracking-tight uppercase mb-6 sm:mb-10 leading-tight text-center">{selectedMenu.title}</h3>
+                <div className="space-y-6 sm:space-y-8 text-left">
+                  {selectedMenu.detailSections.map((section, i) => (
+                    <div key={i}>
+                      <h4 className="text-[10px] font-black tracking-[0.2em] text-neutral-400 uppercase border-b border-neutral-200 pb-2 mb-2">{section.category}</h4>
+                      <p className="text-neutral-600 text-sm sm:text-base leading-relaxed font-light">{section.items}</p>
+                    </div>
+                  ))}
                 </div>
                 <div className="mt-10 sm:mt-16 flex flex-col md:flex-row justify-between items-center gap-6 sm:gap-10 pt-8 sm:pt-10 border-t border-neutral-100 shrink-0">
-                  <div className="text-left">
-                    <span className="block text-[10px] uppercase tracking-[0.3em] text-neutral-400 mb-1 font-black">Precio base por plato</span>
+                  <div className="text-left w-full md:w-auto">
+                    <span className="block text-[10px] uppercase tracking-[0.3em] text-neutral-400 mb-1 font-black">Valor por persona</span>
                     <span className="text-2xl sm:text-4xl font-black">{selectedMenu.price}</span>
+                    {selectedMenu.priceNote && <p className="text-xs text-neutral-500 mt-1">{selectedMenu.priceNote}</p>}
                   </div>
                   <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} type="button" className="w-full md:w-auto min-h-[44px] px-14 py-5 bg-black text-white text-[11px] uppercase tracking-[0.4em] font-black shadow-xl">Solicitar Presupuesto</motion.button>
                 </div>
