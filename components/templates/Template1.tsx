@@ -35,7 +35,7 @@ const BANQUETERIA_TAB_LABELS: Record<string, string> = {
 
 const HERO_IMAGE_URL = 'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&q=80&w=800';
 const HERO_IMAGE_FALLBACK = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=800';
-const QUIENES_SOMOS_IMAGE = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&q=80&w=800';
+const QUIENES_SOMOS_IMAGE = '/areli.png';
 
 type GroupMenuSection = { category: string; items: string };
 type GroupMenuItem = {
@@ -114,8 +114,8 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-              <Image src="/SVG/Recurso 3.svg" alt="D'Areli Gastronómico" width={40} height={40} className="w-10 h-10 object-contain shrink-0" />
-              <span className="text-xl font-black tracking-tighter uppercase">D'ARELI <span className="font-light text-neutral-500">GASTRONÓMICO</span></span>
+              <Image src="/SVG/Recurso 3.svg" alt="" width={40} height={40} className="w-10 h-10 object-contain shrink-0" aria-hidden />
+              <Image src="/SVG/Recurso 4.svg" alt="D'Areli Gastronómico" width={160} height={40} className="h-8 w-auto object-contain object-left" />
             </motion.div>
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="hidden md:flex items-center space-x-8 text-sm font-medium uppercase tracking-widest">
               <a href="#inicio" className="hover:text-neutral-500 transition-colors">Inicio</a>
@@ -154,8 +154,7 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
         </div>
         <div className="container mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <motion.div initial={{ opacity: 0, x: reducedMotion ? 0 : -60 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: reducedMotion ? 0.2 : 1, ease: "easeOut" }} className="space-y-8">
-            <div className="inline-block px-4 py-1.5 bg-white/90 lg:bg-white border border-white/30 lg:border-neutral-200 rounded-full text-[10px] uppercase tracking-[0.3em] font-bold text-neutral-700 lg:text-neutral-600 shadow-sm">Todos los días algo rico</div>
-            <h1 className="text-5xl lg:text-8xl font-extrabold tracking-tighter leading-[0.95] break-words text-white lg:text-neutral-900">
+            <h1 className="text-5xl lg:text-[4rem] font-extrabold tracking-tighter leading-[0.95] break-words text-white lg:text-neutral-900">
               D&apos;ARELI <br /><span className="text-neutral-200 lg:text-neutral-400 font-light italic">GASTRONÓMICO</span>
             </h1>
             <p className="text-lg lg:text-xl text-neutral-200 lg:text-neutral-600 max-w-md leading-relaxed font-light">
@@ -183,8 +182,12 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
       <section id="servicios" className="py-24 bg-white">
         <div className="container mx-auto px-6">
           <motion.div {...fadeInUp} className="text-center mb-16 space-y-4">
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight uppercase">Propuestas Gastronómicas</h2>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight uppercase">{serviceLine === 'cocinería' ? 'Cocinería' : 'Banquetería'}</h2>
+            <p className="text-neutral-600 font-serif italic text-lg md:text-xl">
+              {serviceLine === 'cocinería' ? 'Todos los días algo rico' : 'La experiencia se nota, el sabor se disfruta'}
+            </p>
             <div className="w-24 h-1 bg-black mx-auto"></div>
+            <h3 className="text-2xl md:text-3xl font-bold tracking-tight uppercase text-neutral-700">Propuestas Gastronómicas</h3>
             <p className="text-neutral-500 max-w-2xl mx-auto font-light text-lg">
               {serviceLine === 'cocinería' ? 'Almuerzos del día y opciones temporales para disfrutar en casa o en la oficina.' : 'Explora nuestra selección diseñada para impresionar a cada uno de tus invitados con el más alto estándar de calidad.'}
             </p>
@@ -249,7 +252,30 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
               <motion.div key={currentGalaMenu.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: reducedMotion ? 0.2 : 0.5 }} className="max-w-5xl mx-auto bg-neutral-50 border border-neutral-100 p-8 md:p-20 shadow-2xl relative">
                 <div className="absolute top-0 right-0 w-80 h-80 bg-neutral-200/30 rounded-full blur-[100px] -mr-40 -mt-40"></div>
                 <div className="text-center space-y-3 mb-16">
-                  <div className="flex justify-center mb-8"><div className="w-14 h-14 flex items-center justify-center border-2 border-black rounded-full template1-animate-utensils"><Utensils className="w-6 h-6" /></div></div>
+                  <div className="flex justify-center mb-8" style={{ perspective: '200px' }}>
+                    <motion.div
+                      className="relative w-14 h-14 shrink-0"
+                      style={{ transformStyle: 'preserve-3d' }}
+                      animate={reducedMotion ? { rotateY: 0 } : { rotateY: [0, 0, 180, 180, 0] }}
+                      transition={
+                        reducedMotion
+                          ? {}
+                          : {
+                              duration: 8,
+                              times: [0, 0.5625, 0.625, 0.9375, 1],
+                              repeat: Infinity,
+                              ease: 'easeInOut',
+                            }
+                      }
+                    >
+                      <div className="absolute inset-0 flex items-center justify-center border-2 border-black rounded-full bg-white [backface-visibility:hidden]" aria-hidden>
+                        <Utensils className="w-6 h-6" />
+                      </div>
+                      <div className="absolute inset-0 flex items-center justify-center border-2 border-black rounded-full bg-white [backface-visibility:hidden] [transform:rotateY(180deg)]" aria-hidden>
+                        <Image src="/SVG/Recurso 3.svg" alt="" width={32} height={32} className="w-8 h-8 object-contain" />
+                      </div>
+                    </motion.div>
+                  </div>
                   <h3 className="text-4xl font-black tracking-[0.4em] uppercase">{currentGalaMenu.title}</h3>
                   {currentGalaMenu.subtitle && <div className="text-neutral-500 font-light italic uppercase tracking-[0.3em] text-sm">{currentGalaMenu.subtitle}</div>}
                 </div>
@@ -326,7 +352,7 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
           </motion.div>
           <motion.div initial={{ opacity: 0, x: reducedMotion ? 0 : 60 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: motionDuration, ease: "easeOut" }} className="relative">
             <div className="aspect-square bg-neutral-800 relative overflow-hidden group">
-              <Image src={QUIENES_SOMOS_IMAGE} alt="Chef trabajando en detalle" fill className="object-cover opacity-40 group-hover:opacity-100 transition-opacity duration-1000" sizes="(max-width: 767px) 100vw, 50vw" />
+              <Image src={QUIENES_SOMOS_IMAGE} alt="Areli Sire, maestro de cocina" fill className="object-cover opacity-40 group-hover:opacity-100 transition-opacity duration-1000" sizes="(max-width: 767px) 100vw, 50vw" />
               <div className="absolute inset-0 flex items-center justify-center p-10 text-center border-[12px] border-white/5 m-10">
                 <div className="space-y-6">
                   <Award className="w-16 h-16 mx-auto text-white/50" />

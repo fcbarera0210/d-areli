@@ -18,11 +18,6 @@
   50% { transform: translate(12px, 12px); }
 }
 
-@keyframes template1-utensils-rotate {
-  0%, 100% { transform: rotate(0deg); }
-  50% { transform: rotate(5deg); }
-}
-
 .template1-animate-blob {
   will-change: transform;
   animation: template1-blob-pulse 10s ease-in-out infinite;
@@ -39,15 +34,10 @@
   animation: template1-border-float 8s ease-in-out infinite;
 }
 
-.template1-animate-utensils {
-  animation: template1-utensils-rotate 6s ease-in-out infinite;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .template1-animate-blob,
   .template1-animate-blob-slow,
-  .template1-animate-border,
-  .template1-animate-utensils {
+  .template1-animate-border {
     animation: none !important;
   }
 }

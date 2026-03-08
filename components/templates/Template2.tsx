@@ -84,7 +84,7 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 }
 };
 
-const QUIENES_SOMOS_IMAGE = 'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=800&auto=format&fit=crop';
+const QUIENES_SOMOS_IMAGE = '/areli.png';
 
 type Template2Props = { serviceLine: ServiceLine; onChangeServiceLine: (linea: ServiceLine) => void };
 
@@ -116,8 +116,8 @@ const Template2 = ({ serviceLine, onChangeServiceLine }: Template2Props) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-2">
-              <Image src="/SVG/Recurso 3.svg" alt="D'Areli Gastronómico" width={40} height={40} className="w-10 h-10 object-contain shrink-0" />
-              <span className="text-xl font-black tracking-tighter uppercase">D'Areli <span className="font-light italic">Gastronómico</span></span>
+              <Image src="/SVG/Recurso 3.svg" alt="" width={40} height={40} className="w-10 h-10 object-contain shrink-0" aria-hidden />
+              <Image src="/SVG/Recurso 4.svg" alt="D'Areli Gastronómico" width={160} height={40} className="h-8 w-auto object-contain object-left" />
             </motion.div>
             <div className="hidden md:flex items-center gap-8">
               {['inicio', 'quienes-somos', 'servicios'].map((item) => (
@@ -133,8 +133,7 @@ const Template2 = ({ serviceLine, onChangeServiceLine }: Template2Props) => {
       <section id="inicio" className="relative h-screen flex items-center justify-center overflow-hidden bg-black">
         <motion.div initial={{ scale: 1.2, opacity: 0 }} animate={{ scale: 1, opacity: 0.4 }} transition={{ duration: reducedMotion ? 0.3 : 2 }} className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-400 via-slate-900 to-black" />
         <div className="relative z-10 text-center px-4 max-w-4xl">
-          <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: motionDuration }} className="text-sm uppercase tracking-[0.3em] font-bold text-slate-400 mb-6">Todos los días algo rico</motion.p>
-          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: reducedMotion ? 0 : 0.5, duration: motionDuration }} className="text-5xl md:text-8xl font-bold text-white mb-6 tracking-tight">
+          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: reducedMotion ? 0 : 0.5, duration: motionDuration }} className="text-5xl md:text-[4rem] font-bold text-white mb-6 tracking-tight">
             D&apos;Areli <br /><span className="italic font-serif text-slate-300 font-light underline decoration-red-500/30 underline-offset-8">Gastronómico</span>
           </motion.h1>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: reducedMotion ? 0 : 1, duration: motionDuration }} className="text-xl text-slate-300 mb-10 font-light max-w-2xl mx-auto">
@@ -171,7 +170,7 @@ const Template2 = ({ serviceLine, onChangeServiceLine }: Template2Props) => {
             </div>
             <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: reducedMotion ? 0.2 : 1 }} className="relative">
               <div className="aspect-[4/5] rounded-[2rem] bg-slate-200 overflow-hidden shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-700">
-                <Image src={QUIENES_SOMOS_IMAGE} alt="" width={800} height={1000} className="w-full h-full object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
+                <Image src={QUIENES_SOMOS_IMAGE} alt="Areli Sire, maestro de cocina" width={800} height={1000} className="w-full h-full object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
               </div>
               <motion.div animate={reducedMotion ? undefined : { y: [0, -10, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }} className="absolute -bottom-6 -left-6 bg-white text-black p-10 rounded-3xl shadow-2xl border border-slate-100">
                 <p className="text-5xl font-black text-red-600">10+</p>
@@ -184,11 +183,16 @@ const Template2 = ({ serviceLine, onChangeServiceLine }: Template2Props) => {
 
       <section id="servicios" className="py-24 bg-slate-50 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Propuestas {serviceLine === 'cocinería' ? 'del Día' : 'Personalizadas'}</h2>
-            {serviceLine === 'cocinería' && (
-              <p className="text-slate-500 max-w-2xl mx-auto">Almuerzos del día y opciones temporales para disfrutar en casa o en la oficina.</p>
-            )}
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="text-center mb-16 space-y-4">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">{serviceLine === 'cocinería' ? 'Cocinería' : 'Banquetería'}</h2>
+            <p className="text-slate-600 font-serif italic text-lg md:text-xl">
+              {serviceLine === 'cocinería' ? 'Todos los días algo rico' : 'La experiencia se nota, el sabor se disfruta'}
+            </p>
+            <div className="w-24 h-1 bg-slate-900 mx-auto" />
+            <h3 className="text-2xl md:text-3xl font-bold text-slate-700">Propuestas {serviceLine === 'cocinería' ? 'del Día' : 'Personalizadas'}</h3>
+            <p className="text-slate-500 max-w-2xl mx-auto">
+              {serviceLine === 'cocinería' ? 'Almuerzos del día y opciones temporales para disfrutar en casa o en la oficina.' : 'Explora nuestra selección diseñada para impresionar a cada uno de tus invitados con el más alto estándar de calidad.'}
+            </p>
           </motion.div>
             {serviceLine === 'cocinería' ? (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
