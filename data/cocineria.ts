@@ -1,5 +1,5 @@
 /**
- * Datos placeholder para D'Areli Cocinería.
+ * Datos placeholder para D'Areli Gastronómico.
  * Almuerzos diarios (típicos chilenos) y comidas temporales (empanadas fin de semana).
  * Reemplazar con menús definitivos cuando estén disponibles.
  */

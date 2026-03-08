@@ -1,5 +1,5 @@
 /**
- * Menús de Banquetería D'Areli.
+ * Menús de D'Areli Gastronómico.
  * Fuente: menus-banqueteria-actualizados.txt
  */
 

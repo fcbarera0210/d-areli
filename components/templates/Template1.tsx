@@ -114,8 +114,8 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-              <div className="w-10 h-10 bg-black flex items-center justify-center rounded-sm"><Utensils className="text-white w-6 h-6" /></div>
-              <span className="text-xl font-bold tracking-tighter uppercase">D'ARELI <span className="font-light text-neutral-500">{serviceLine === 'cocinería' ? 'COCINERÍA' : 'BANQUETERÍA'}</span></span>
+              <Image src="/SVG/Recurso 3.svg" alt="D'Areli Gastronómico" width={40} height={40} className="w-10 h-10 object-contain shrink-0" />
+              <span className="text-xl font-black tracking-tighter uppercase">D'ARELI <span className="font-light text-neutral-500">GASTRONÓMICO</span></span>
             </motion.div>
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="hidden md:flex items-center space-x-8 text-sm font-medium uppercase tracking-widest">
               <a href="#inicio" className="hover:text-neutral-500 transition-colors">Inicio</a>
@@ -156,7 +156,7 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
           <motion.div initial={{ opacity: 0, x: reducedMotion ? 0 : -60 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: reducedMotion ? 0.2 : 1, ease: "easeOut" }} className="space-y-8">
             <div className="inline-block px-4 py-1.5 bg-white/90 lg:bg-white border border-white/30 lg:border-neutral-200 rounded-full text-[10px] uppercase tracking-[0.3em] font-bold text-neutral-700 lg:text-neutral-600 shadow-sm">Todos los días algo rico</div>
             <h1 className="text-5xl lg:text-8xl font-extrabold tracking-tighter leading-[0.95] break-words text-white lg:text-neutral-900">
-              D&apos;ARELI <br /><span className="text-neutral-200 lg:text-neutral-400 font-light italic">GASTRONOMÍA</span>
+              D&apos;ARELI <br /><span className="text-neutral-200 lg:text-neutral-400 font-light italic">GASTRONÓMICO</span>
             </h1>
             <p className="text-lg lg:text-xl text-neutral-200 lg:text-neutral-600 max-w-md leading-relaxed font-light">
               Profesionalismo y calidad en cada plato. Ingredientes seleccionados y la experiencia de nuestro chef al servicio de tu evento o de tu mesa del día a día.
@@ -173,7 +173,7 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
               <div className="absolute bottom-0 left-0 right-0 p-10 bg-gradient-to-t from-black/90 via-black/40 to-transparent text-white">
                 <motion.div initial={{ width: 0 }} whileInView={{ width: 48 }} transition={{ delay: 0.5, duration: motionDuration }} className="h-1 bg-white mb-6" />
                 <span className="text-4xl font-serif italic tracking-wide block mb-2">Arte Culinario</span>
-                <p className="text-[10px] uppercase tracking-[0.4em] text-neutral-300 font-bold">D&apos;Areli Premium Experience</p>
+                <p className="text-[10px] uppercase tracking-[0.4em] text-neutral-300 font-bold">D&apos;Areli Gastronómico</p>
               </div>
             </div>
           </motion.div>
@@ -305,7 +305,7 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
             <div className="space-y-8 text-neutral-400 font-light leading-relaxed text-lg">
               {serviceLine === 'cocinería' ? (
                 <>
-                  <p>D'Areli Cocinería nace para llevar la misma calidad de nuestra cocina a tu mesa del día a día. Ofrecemos almuerzos individuales tipo menú ejecutivo: ensalada, pan, postre y plato principal, con opción de bebestible y envío.</p>
+                  <p>D'Areli Gastronómico nace para llevar la misma calidad de nuestra cocina a tu mesa del día a día. Ofrecemos almuerzos individuales tipo menú ejecutivo: ensalada, pan, postre y plato principal, con opción de bebestible y envío.</p>
                   <p>Utilizamos ingredientes locales y recetas tradicionales chilenas, preparadas con el mismo cuidado que nos distingue en eventos. Cada plato está pensado para nutrir y satisfacer.</p>
                 </>
               ) : (
@@ -405,8 +405,8 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
       <footer className="bg-neutral-100 py-20 border-t border-neutral-200 text-center">
         <div className="container mx-auto px-6 space-y-12">
           <div className="flex justify-center items-center gap-3">
-            <div className="w-10 h-10 bg-black flex items-center justify-center rounded-sm"><Utensils className="text-white w-5 h-5" /></div>
-            <span className="text-2xl font-black tracking-tighter uppercase">D'ARELI <span className="font-light text-neutral-500">{serviceLine === 'cocinería' ? 'COCINERÍA' : 'BANQUETERÍA'}</span></span>
+            <Image src="/SVG/Recurso 3.svg" alt="D'Areli Gastronómico" width={40} height={40} className="w-10 h-10 object-contain shrink-0" />
+            <span className="text-2xl font-black tracking-tighter uppercase">D'ARELI <span className="font-light text-neutral-500">GASTRONÓMICO</span></span>
           </div>
           <div className="flex flex-wrap justify-center gap-6 text-[10px] uppercase tracking-[0.4em] font-black text-neutral-400">
             <a href="#inicio" className="min-h-[44px] inline-flex items-center hover:text-black transition-colors">Inicio</a>
@@ -414,7 +414,7 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
             <a href="#quienes-somos" className="min-h-[44px] inline-flex items-center hover:text-black transition-colors">Nosotros</a>
             <a href="#contacto" className="min-h-[44px] inline-flex items-center hover:text-black transition-colors">Contacto</a>
           </div>
-          <p className="text-[10px] text-neutral-400 uppercase tracking-[0.5em] font-medium">Gastronomía de Autor • Romeral, Región del Maule, Chile</p>
+          <p className="text-[10px] text-neutral-400 uppercase tracking-[0.5em] font-medium">Gastronómico de Autor • Romeral, Región del Maule, Chile</p>
           <div className="pt-12 text-neutral-300 text-[9px] uppercase tracking-[0.4em] font-bold border-t border-neutral-200 max-w-lg mx-auto">© 2026 GRUPO D&apos;ARELI. TODOS LOS DERECHOS RESERVADOS. Web diseñada y desarrollada por <a href="https://charlideas.vercel.app/" target="_blank" rel="noopener noreferrer" className="underline hover:text-neutral-500 transition-colors">Charl!deas</a>.</div>
         </div>
       </footer>

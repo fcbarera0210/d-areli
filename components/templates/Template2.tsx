@@ -116,8 +116,8 @@ const Template2 = ({ serviceLine, onChangeServiceLine }: Template2Props) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center text-white font-bold">D</div>
-              <span className="text-xl font-bold tracking-tighter uppercase">D'Areli <span className="font-light italic">{serviceLine === 'cocinería' ? 'Cocinería' : 'Banquetería'}</span></span>
+              <Image src="/SVG/Recurso 3.svg" alt="D'Areli Gastronómico" width={40} height={40} className="w-10 h-10 object-contain shrink-0" />
+              <span className="text-xl font-black tracking-tighter uppercase">D'Areli <span className="font-light italic">Gastronómico</span></span>
             </motion.div>
             <div className="hidden md:flex items-center gap-8">
               {['inicio', 'quienes-somos', 'servicios'].map((item) => (
@@ -135,7 +135,7 @@ const Template2 = ({ serviceLine, onChangeServiceLine }: Template2Props) => {
         <div className="relative z-10 text-center px-4 max-w-4xl">
           <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: motionDuration }} className="text-sm uppercase tracking-[0.3em] font-bold text-slate-400 mb-6">Todos los días algo rico</motion.p>
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: reducedMotion ? 0 : 0.5, duration: motionDuration }} className="text-5xl md:text-8xl font-bold text-white mb-6 tracking-tight">
-            D&apos;Areli <br /><span className="italic font-serif text-slate-300 font-light underline decoration-red-500/30 underline-offset-8">Gastronomía</span>
+            D&apos;Areli <br /><span className="italic font-serif text-slate-300 font-light underline decoration-red-500/30 underline-offset-8">Gastronómico</span>
           </motion.h1>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: reducedMotion ? 0 : 1, duration: motionDuration }} className="text-xl text-slate-300 mb-10 font-light max-w-2xl mx-auto">
             Profesionalismo y calidad en cada plato. Ingredientes seleccionados y la experiencia de nuestro chef al servicio de tu evento o de tu mesa del día a día.
@@ -154,7 +154,7 @@ const Template2 = ({ serviceLine, onChangeServiceLine }: Template2Props) => {
               <span className="text-red-600 font-bold tracking-[0.3em] uppercase text-xs">{serviceLine === 'cocinería' ? 'Nuestra Cocinería' : 'Nuestra Esencia'}</span>
               <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900">{serviceLine === 'cocinería' ? 'Calidad en cada almuerzo' : 'Pasión por la alta cocina'}</h2>
               <p className="text-lg text-slate-600 leading-relaxed font-light">
-                {serviceLine === 'cocinería' ? "D'Areli Cocinería lleva la misma calidad de nuestra cocina a tu mesa del día a día. Almuerzos individuales tipo menú ejecutivo con opción de bebestible y envío. Ingredientes locales y recetas tradicionales chilenas, preparadas con el mismo cuidado que nos distingue." : "En D'Areli, transformamos reuniones en experiencias memorables. Nuestra cocina fusiona la técnica profesional con el cariño de lo hecho en casa, asegurando que cada plato cuente una historia de calidad."}
+                {serviceLine === 'cocinería' ? "D'Areli Gastronómico lleva la misma calidad de nuestra cocina a tu mesa del día a día. Almuerzos individuales tipo menú ejecutivo con opción de bebestible y envío. Ingredientes locales y recetas tradicionales chilenas, preparadas con el mismo cuidado que nos distingue." : "En D'Areli, transformamos reuniones en experiencias memorables. Nuestra cocina fusiona la técnica profesional con el cariño de lo hecho en casa, asegurando que cada plato cuente una historia de calidad."}
               </p>
               <div className="grid grid-cols-2 gap-8 py-4">
                 <motion.div variants={itemVariants} className="space-y-2">
@@ -381,10 +381,10 @@ const Template2 = ({ serviceLine, onChangeServiceLine }: Template2Props) => {
           <div className="grid md:grid-cols-3 gap-16 mb-16">
             <div className="md:col-span-2">
               <div className="flex items-center gap-2 text-white mb-8">
-                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black font-black">D</div>
+                <Image src="/SVG/Recurso 3.svg" alt="D'Areli Gastronómico" width={40} height={40} className="w-10 h-10 object-contain shrink-0 invert" />
                 <span className="text-2xl font-black tracking-tighter uppercase italic">D'Areli</span>
               </div>
-              <p className="max-w-md text-sm font-light leading-relaxed mb-8 text-slate-500">{serviceLine === 'cocinería' ? "En cada almuerzo y pedido ponemos la misma calidad y cuidado. D'Areli Cocinería — sabor y nutrición para tu día a día." : "La gastronomía es el lenguaje del cuidado. En cada plato ponemos nuestra reputación y pasión para asegurar que su evento sea, sencillamente, perfecto."}</p>
+              <p className="max-w-md text-sm font-light leading-relaxed mb-8 text-slate-500">{serviceLine === 'cocinería' ? "En cada almuerzo y pedido ponemos la misma calidad y cuidado. D'Areli Gastronómico — sabor y nutrición para tu día a día." : "La gastronomía es el lenguaje del cuidado. En cada plato ponemos nuestra reputación y pasión para asegurar que su evento sea, sencillamente, perfecto."}</p>
               <div className="flex gap-4">
                 <motion.a href="#" target="_blank" rel="noopener noreferrer" whileHover={{ y: -5, backgroundColor: '#fff', color: '#000' }} className="w-12 h-12 rounded-2xl border border-slate-800 flex items-center justify-center transition-all text-slate-400" aria-label="Instagram"><Instagram size={20} /></motion.a>
                 <motion.a href="#" target="_blank" rel="noopener noreferrer" whileHover={{ y: -5, backgroundColor: '#fff', color: '#000' }} className="w-12 h-12 rounded-2xl border border-slate-800 flex items-center justify-center transition-all text-slate-400" aria-label="Facebook"><Facebook size={20} /></motion.a>
@@ -403,7 +403,7 @@ const Template2 = ({ serviceLine, onChangeServiceLine }: Template2Props) => {
             </div>
           </div>
           <div className="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] uppercase tracking-[0.2em] font-bold">
-            <p>&copy; 2026 D&apos;Areli {serviceLine === 'cocinería' ? 'Cocinería' : 'Banquetería'} - Calidad Superior</p>
+            <p>&copy; 2026 D&apos;Areli Gastronómico - Calidad Superior</p>
             <p className="opacity-30">Una empresa de Grupo D&apos;Areli. Web diseñada y desarrollada por <a href="https://charlideas.vercel.app/" target="_blank" rel="noopener noreferrer" className="underline hover:text-slate-300 transition-colors">Charl!deas</a>.</p>
           </div>
         </div>

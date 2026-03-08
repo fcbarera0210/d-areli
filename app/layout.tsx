@@ -3,8 +3,11 @@ import { Suspense } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "D'Areli - Banquetería y Cocinería",
-  description: "D'Areli: banquetería para eventos y cocinería con almuerzos individuales tipo menú ejecutivo. Romeral, Región del Maule, Chile.",
+  title: "D'Areli - Gastronómico",
+  description: "D'Areli Gastronómico: eventos y almuerzos ejecutivos. Romeral, Región del Maule, Chile.",
+  icons: {
+    icon: "/SVG/Recurso%203.svg",
+  },
 };
 
 export default function RootLayout({
