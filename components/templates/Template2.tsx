@@ -4,6 +4,58 @@ import React, { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { ChefHat, Utensils, Phone, Mail, MapPin, ChevronRight, Menu, X, Award, Clock, Instagram, Facebook } from 'lucide-react';
+import type { ServiceLine } from '@/app/page';
+import { almuerzosDiarios, comidasTemporales, textoComidasTemporales } from '@/data/cocineria';
+import {
+  BANQUETERIA_GALA_MENUS,
+  COCTELERIA_CATEGORIES,
+  COCTELERIA_CONTACT,
+  COCTELERIA_FOOTER,
+} from '@/data/banqueteria';
+
+const BANQUETERIA_TAB_IDS = [...BANQUETERIA_GALA_MENUS.map((m) => m.id), 'cocteleria'] as const;
+const BANQUETERIA_TAB_LABELS: Record<string, string> = {
+  'evento-exclusivo': 'Evento Exclusivo',
+  boda: 'Boda',
+  campestre: 'Campestre',
+  corporativo: 'Corporativo',
+  cocteleria: 'Coctelería',
+};
+
+function galaSectionsToRecord(sections: { category: string; items: string }[]): Record<string, string[]> {
+  return Object.fromEntries(sections.map((s) => [s.category, s.items.split(/\s*;\s*/).map((i) => i.trim())]));
+}
+
+const COCINERIA_COLORS_T2 = ['border-red-500', 'bg-red-500', 'text-red-600', 'border-blue-500', 'bg-blue-500', 'text-blue-600', 'border-amber-500', 'bg-amber-500', 'text-amber-600', 'border-teal-500', 'bg-teal-500', 'text-teal-600'] as const;
+function buildCocineriaCardsT2(): LunchMenuItem[] {
+  const cards: LunchMenuItem[] = [];
+  almuerzosDiarios.forEach((a, i) => {
+    const idx = i % 4;
+    cards.push({
+      title: a.nombre.toUpperCase(),
+      color: COCINERIA_COLORS_T2[idx * 3] as string,
+      bg: COCINERIA_COLORS_T2[idx * 3 + 1] as string,
+      textColor: COCINERIA_COLORS_T2[idx * 3 + 2] as string,
+      items: [a.descripcion],
+      price: a.precio,
+      detailSections: [{ category: 'INCLUYE', items: a.descripcion }],
+    });
+  });
+  comidasTemporales.forEach((e, i) => {
+    const idx = (almuerzosDiarios.length + i) % 4;
+    cards.push({
+      title: e.variedad.toUpperCase(),
+      color: COCINERIA_COLORS_T2[idx * 3] as string,
+      bg: COCINERIA_COLORS_T2[idx * 3 + 1] as string,
+      textColor: COCINERIA_COLORS_T2[idx * 3 + 2] as string,
+      items: [e.descripcion],
+      price: e.precio,
+      detailSections: [{ category: 'DISPONIBILIDAD', items: textoComidasTemporales }, { category: 'DESCRIPCIÓN', items: e.descripcion }],
+    });
+  });
+  return cards;
+}
+const COCINERIA_CARDS_T2 = buildCocineriaCardsT2();
 
 type LunchMenuSection = { category: string; items: string };
 type LunchMenuItem = {
@@ -34,8 +86,10 @@ const itemVariants = {
 
 const QUIENES_SOMOS_IMAGE = 'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=800&auto=format&fit=crop';
 
-const Template2 = () => {
-  const [activeTab, setActiveTab] = useState('banqueteria');
+type Template2Props = { serviceLine: ServiceLine; onChangeServiceLine: (linea: ServiceLine) => void };
+
+const Template2 = ({ serviceLine, onChangeServiceLine }: Template2Props) => {
+  const [activeBanqueteriaTab, setActiveBanqueteriaTab] = useState(BANQUETERIA_TAB_IDS[0]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedLunchMenu, setSelectedLunchMenu] = useState<LunchMenuItem | null>(null);
   const reducedMotion = useReducedMotion();
@@ -53,71 +107,8 @@ const Template2 = () => {
     return () => window.removeEventListener('keydown', onEscape);
   }, [selectedLunchMenu, closeLunchModal]);
 
-  const lunchMenus: LunchMenuItem[] = [
-    {
-      title: "MENÚ EMPRESAS", color: "border-red-500", bg: "bg-red-500", textColor: "text-red-600",
-      items: ["Pisco/Mango Sour, cerveza y coctelería", "Almuerzo buffet de asados", "Postre pie de limón y torta-helado", "Opción bar abierto"],
-      price: "$23.800 + IVA", priceNote: "$35.700 + IVA (*) con bar abierto",
-      detailSections: [
-        { category: "APERITIVOS Y COCTELERÍA", items: "Pisco Sour, Mango Sour, Cerveza, 3 empanaditas de queso, 2 ceviches de reineta, 2 pastelitos dulces, 2 tutitos de ala, 1 pastel de jaiba." },
-        { category: "ALMUERZO", items: "Buffet de asados: pollo, cerdo y vacuno a la parrilla. Papas cocidas, ensaladas (tomate, lechuga, choclo), pan, pebre." },
-        { category: "POSTRE", items: "Pie de limón, Torta, Helado." },
-        { category: "DETALLES DEL SERVICIO", items: "Servicio incluye: Garzones y cocineros, mesas y sillas vestidas, loza, cristalería, cubiertos. Valor: $23.800 + IVA; $35.700 + IVA (*) bar abierto barra nacional (Micheladas, Pisco, Whisky, Aperol, Espumante, Sours)." }
-      ]
-    },
-    {
-      title: "MENÚ CAMPESTRE", color: "border-blue-500", bg: "bg-blue-500", textColor: "text-blue-600",
-      items: ["Aperitivos y ponches, coctelería criolla", "Plato de fondo: buffet asados criollos", "Postres y trasnoche"],
-      price: "$23.000 + IVA",
-      detailSections: [
-        { category: "APERITIVOS Y BEBESTIBLES", items: "Pisco o Mango Sour, Cerveza, ponches, jugos naturales, bebidas, agua detox." },
-        { category: "COCTELERÍA", items: "3 empanadas de queso o pino, 3 sopaipillas con pebre, 2 ceviche de reineta, Chancho en piedra, Arrollado de huaso, 2 tutitos de pollo al horno." },
-        { category: "PLATO DE FONDO", items: "Buffet asados criollos: pollo, cerdo, vacuno, prietas, longaniza. Papas cocidas, pan, pebre, vinos y bebidas." },
-        { category: "BUFFET DE POSTRES", items: "Leche asada, Mote con huesillos, Arroz con leche, Panqueques, Frutas." },
-        { category: "TRASNOCHE", items: "Consomé, Tapaditos (ave, queso, salame)." },
-        { category: "DETALLES DEL SERVICIO", items: "Servicio incluye: Mobiliario, personal de servicio. Valor: $23.000 + IVA." }
-      ]
-    },
-    {
-      title: "MENÚ MATRIMONIO", color: "border-orange-500", bg: "bg-orange-500", textColor: "text-orange-600",
-      items: ["Coctelería y entrada elegante", "Fondo: plateada o cerdo al horno", "Postres y trasnoche"],
-      price: "$27.000 + IVA",
-      detailSections: [
-        { category: "APERITIVOS", items: "1 Pisco o Mango Sour, 1 espumante, ponches, jugos naturales y bebidas." },
-        { category: "COCTELERÍA", items: "4 canapés variados, 2 ceviches de reineta, 3 empanaditas de queso, 2 brochetas, 2 sopaipillas de coctel." },
-        { category: "ENTRADA", items: "Rollito de jamón York; Camarón y palmitos en lechuga; Palta rellena con dressing de yogurth." },
-        { category: "FONDO", items: "Plateada de vacuno en su jugo con papas rústicas. Cerdo al horno con papas duquesas." },
-        { category: "POSTRES", items: "Mousse de manjar, Cheesecake de maracuyá, Pie de limón, Tiramisú, Frutas frescas." },
-        { category: "TRASNOCHE", items: "Tapaditos surtidos, Consomé de ave." },
-        { category: "DETALLES DEL SERVICIO", items: "Servicio incluye: Mobiliario, personal, decoración centro de mesas. Valor: $27.000 + IVA." }
-      ]
-    },
-    {
-      title: "MENÚ MATRIMONIO VIP", color: "border-teal-500", bg: "bg-teal-500", textColor: "text-teal-600",
-      items: ["Coctelería premium", "Entrada: ceviche, mousse o fantasía marina", "Fondo: lomo vetado o plateada", "Trasnoche cordero/costillar"],
-      price: "$30.000 + IVA",
-      detailSections: [
-        { category: "APERITIVOS", items: "Pisco o Mango Sour, espumantes, Late Harvest, Cerveza Corona, bebidas y jugos." },
-        { category: "COCTELERÍA", items: "1 pastel de jaiba, 2 bocados de ceviche, 2 empanaditas de queso, 2 pinchos de pollo a la mostaza, 2 pastelitos dulces." },
-        { category: "ENTRADA", items: "Ceviche de reineta con crostini al ajillo. Mousse de pollo en palta y dressing de yogurth. Fantasía marina: fondos de alcachofa con puré de jaiba." },
-        { category: "FONDO", items: "Lomo vetado a las brasas con papas rústicas. Plateada en su jugo con pastelera de choclo." },
-        { category: "POSTRES", items: "Cheesecake de frutilla, Pie de limón, Leche asada, Panqueques, Mousse de chocolate, Panna cotta de café." },
-        { category: "TRASNOCHE (100 PERS)", items: "Cordero asado, Costillar asado, Consomé, Tapaditos." },
-        { category: "DETALLES DEL SERVICIO", items: "Servicio incluye: Mobiliario, decoración centro de mesas. Valor: $30.000 + IVA." }
-      ]
-    }
-  ];
-
-  const galaMenu: Record<string, string[]> = {
-    aperitivos: ["Pisco sour", "Mango sour", "Bebidas", "Jugo natural", "Vino espumante", "Cerveza"],
-    bocados: ["4 canapés variados", "2 ceviches de reineta", "1 pastel de jaiba", "3 empanaditas de queso", "1 brocheta de cerdo", "2 pastelitos dulces"],
-    entradas: ["Mousse de pollo en palta natural y dressing de yogurth", "Fantasía marina (pastel de jaiba en fondos de alcachofa y lechuga marina)"],
-    "plato principal": ["Mechada de vacuno cocinada en su jugo con pastelera de choclo y papas crocantes", "Plateada de vacuno con salsa mignon y papas rústicas al perejil"],
-    "menú vegetariano": ["Quiche de verduras con salteado de vegetales"],
-    líquidos: ["Vinos, bebidas y jugos durante el servicio", "Té, café, agua de hierbas"],
-    "buffet de postres": ["Suspiro limeño", "Mousse de chocolate", "Cheesecake de frutilla", "Pie de limón", "Waffles y helado", "Leche asada"],
-    trasnoche: ["Consomé de ave", "Tapaditos"]
-  };
+  const currentGalaMenu = BANQUETERIA_GALA_MENUS.find((m) => m.id === activeBanqueteriaTab);
+  const galaMenuRecord = currentGalaMenu ? galaSectionsToRecord(currentGalaMenu.sections) : null;
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 overflow-x-hidden">
@@ -126,7 +117,7 @@ const Template2 = () => {
           <div className="flex justify-between h-20 items-center">
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-2">
               <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center text-white font-bold">D</div>
-              <span className="text-xl font-bold tracking-tighter uppercase">D'Areli <span className="font-light italic">Banquetería</span></span>
+              <span className="text-xl font-bold tracking-tighter uppercase">D'Areli <span className="font-light italic">{serviceLine === 'cocinería' ? 'Cocinería' : 'Banquetería'}</span></span>
             </motion.div>
             <div className="hidden md:flex items-center gap-8">
               {['inicio', 'quienes-somos', 'servicios'].map((item) => (
@@ -142,13 +133,16 @@ const Template2 = () => {
       <section id="inicio" className="relative h-screen flex items-center justify-center overflow-hidden bg-black">
         <motion.div initial={{ scale: 1.2, opacity: 0 }} animate={{ scale: 1, opacity: 0.4 }} transition={{ duration: reducedMotion ? 0.3 : 2 }} className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-400 via-slate-900 to-black" />
         <div className="relative z-10 text-center px-4 max-w-4xl">
+          <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: motionDuration }} className="text-sm uppercase tracking-[0.3em] font-bold text-slate-400 mb-6">Todos los días algo rico</motion.p>
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: reducedMotion ? 0 : 0.5, duration: motionDuration }} className="text-5xl md:text-8xl font-bold text-white mb-6 tracking-tight">
-            Arte en cada <br /><span className="italic font-serif text-slate-300 font-light underline decoration-red-500/30 underline-offset-8">Bocado</span>
+            D&apos;Areli <br /><span className="italic font-serif text-slate-300 font-light underline decoration-red-500/30 underline-offset-8">Gastronomía</span>
           </motion.h1>
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: reducedMotion ? 0 : 1, duration: motionDuration }} className="text-xl text-slate-300 mb-10 font-light">Servicios gastronómicos de alta gama para empresas y celebraciones únicas.</motion.p>
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: reducedMotion ? 0 : 1, duration: motionDuration }} className="text-xl text-slate-300 mb-10 font-light max-w-2xl mx-auto">
+            Profesionalismo y calidad en cada plato. Ingredientes seleccionados y la experiencia de nuestro chef al servicio de tu evento o de tu mesa del día a día.
+          </motion.p>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: reducedMotion ? 0 : 1.3, duration: motionDuration }} className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button type="button" onClick={() => { scrollToServicios(); setActiveTab('banqueteria'); }} className="px-8 py-4 bg-white text-black font-bold rounded-full hover:bg-slate-100 transition-all flex items-center justify-center gap-2 shadow-xl">Banquetería Gala <ChevronRight size={18}/></button>
-            <button type="button" onClick={() => { scrollToServicios(); setActiveTab('almuerzos'); }} className="px-8 py-4 border border-white/30 text-white font-bold rounded-full hover:bg-white/10 transition-colors flex items-center justify-center gap-2 backdrop-blur-sm">Menús Almuerzo <ChevronRight size={18}/></button>
+            <button type="button" onClick={() => { onChangeServiceLine('banqueteria'); document.getElementById('servicios')?.scrollIntoView({ behavior: 'smooth' }); }} className={`px-8 py-4 rounded-full text-sm font-bold transition-all flex items-center justify-center gap-2 ${serviceLine === 'banqueteria' ? 'bg-white text-black shadow-xl' : 'border border-white/30 text-white hover:bg-white/10 backdrop-blur-sm'}`}>Banquetería <ChevronRight size={18}/></button>
+            <button type="button" onClick={() => { onChangeServiceLine('cocinería'); document.getElementById('servicios')?.scrollIntoView({ behavior: 'smooth' }); }} className={`px-8 py-4 rounded-full text-sm font-bold transition-all flex items-center justify-center gap-2 ${serviceLine === 'cocinería' ? 'bg-white text-black shadow-xl' : 'border border-white/30 text-white hover:bg-white/10 backdrop-blur-sm'}`}>Cocinería <ChevronRight size={18}/></button>
           </motion.div>
         </div>
       </section>
@@ -157,19 +151,21 @@ const Template2 = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div className="space-y-6">
-              <span className="text-red-600 font-bold tracking-[0.3em] uppercase text-xs">Nuestra Esencia</span>
-              <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900">Pasión por la alta cocina</h2>
-              <p className="text-lg text-slate-600 leading-relaxed font-light">En <strong>D'Areli</strong>, transformamos reuniones en experiencias memorables. Nuestra cocina fusiona la técnica profesional con el cariño de lo hecho en casa, asegurando que cada plato cuente una historia de calidad.</p>
+              <span className="text-red-600 font-bold tracking-[0.3em] uppercase text-xs">{serviceLine === 'cocinería' ? 'Nuestra Cocinería' : 'Nuestra Esencia'}</span>
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900">{serviceLine === 'cocinería' ? 'Calidad en cada almuerzo' : 'Pasión por la alta cocina'}</h2>
+              <p className="text-lg text-slate-600 leading-relaxed font-light">
+                {serviceLine === 'cocinería' ? "D'Areli Cocinería lleva la misma calidad de nuestra cocina a tu mesa del día a día. Almuerzos individuales tipo menú ejecutivo con opción de bebestible y envío. Ingredientes locales y recetas tradicionales chilenas, preparadas con el mismo cuidado que nos distingue." : "En D'Areli, transformamos reuniones en experiencias memorables. Nuestra cocina fusiona la técnica profesional con el cariño de lo hecho en casa, asegurando que cada plato cuente una historia de calidad."}
+              </p>
               <div className="grid grid-cols-2 gap-8 py-4">
                 <motion.div variants={itemVariants} className="space-y-2">
                   <div className="w-12 h-12 bg-slate-900 rounded-2xl flex items-center justify-center text-white shadow-lg"><Award size={24}/></div>
                   <h4 className="font-bold">Excelencia</h4>
-                  <p className="text-sm text-slate-500">Certificación en cada proceso gastronómico.</p>
+                  <p className="text-sm text-slate-500">{serviceLine === 'cocinería' ? 'Calidad en cada plato que preparamos.' : 'Certificación en cada proceso gastronómico.'}</p>
                 </motion.div>
                 <motion.div variants={itemVariants} className="space-y-2">
                   <div className="w-12 h-12 bg-red-600 rounded-2xl flex items-center justify-center text-white shadow-lg"><Clock size={24}/></div>
-                  <h4 className="font-bold">Eficiencia</h4>
-                  <p className="text-sm text-slate-500">Logística perfecta para eventos de gran escala.</p>
+                  <h4 className="font-bold">{serviceLine === 'cocinería' ? 'Práctico' : 'Eficiencia'}</h4>
+                  <p className="text-sm text-slate-500">{serviceLine === 'cocinería' ? 'Menú del día, envíos y opciones a tu medida.' : 'Logística perfecta para eventos de gran escala.'}</p>
                 </motion.div>
               </div>
             </div>
@@ -189,20 +185,75 @@ const Template2 = () => {
       <section id="servicios" className="py-24 bg-slate-50 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Propuestas Personalizadas</h2>
-            <div className="flex justify-center mt-8 p-1.5 bg-white rounded-full shadow-inner max-w-sm mx-auto border border-slate-200">
-              {['banqueteria', 'almuerzos'].map((tab) => (
-                <button key={tab} type="button" onClick={() => setActiveTab(tab)} className={`relative flex-1 py-3 rounded-full text-xs font-black uppercase tracking-widest transition-all z-10 ${activeTab === tab ? 'text-white' : 'text-slate-400'}`}>
-                  {tab === 'banqueteria' ? 'Banquetería Gala' : 'Menús Almuerzo'}
-                  {activeTab === tab && <motion.div layoutId="tab-bg-t2" className="absolute inset-0 bg-black rounded-full -z-10 shadow-lg" transition={{ type: "spring", bounce: 0.2, duration: 0.6 }} />}
-                </button>
-              ))}
-            </div>
+            <h2 className="text-4xl font-bold mb-4">Propuestas {serviceLine === 'cocinería' ? 'del Día' : 'Personalizadas'}</h2>
+            {serviceLine === 'cocinería' && (
+              <p className="text-slate-500 max-w-2xl mx-auto">Almuerzos del día y opciones temporales para disfrutar en casa o en la oficina.</p>
+            )}
           </motion.div>
+            {serviceLine === 'cocinería' ? (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {COCINERIA_CARDS_T2.map((menu, idx) => (
+                <motion.div key={idx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.08 }} whileHover={{ y: -10 }} className={`bg-white rounded-[2rem] shadow-xl border-b-[12px] ${menu.color} overflow-hidden group transition-all duration-300`}>
+                  <div className={`${menu.bg} p-5 sm:p-8 text-white text-center relative overflow-hidden`}>
+                    <motion.div initial={{ opacity: 0.1 }} whileHover={{ scale: 1.5, opacity: 0.2 }} className="absolute -right-4 -bottom-4"><Utensils size={80} /></motion.div>
+                    <h3 className="font-black text-base sm:text-lg md:text-xl tracking-tight leading-snug relative z-10 uppercase italic break-words">{menu.title}</h3>
+                  </div>
+                  <div className="p-8 space-y-8">
+                    {menu.items.map((item, i) => (
+                      <div key={i}>
+                        <p className="text-sm text-slate-600 font-medium leading-relaxed group-hover:text-black transition-colors">{item}</p>
+                        {i < menu.items.length - 1 && <hr className="mt-6 border-slate-50" />}
+                      </div>
+                    ))}
+                    <div className="pt-6 mt-6 border-t border-slate-50 flex justify-between items-end">
+                      <div>
+                        <p className="text-[9px] uppercase font-black text-slate-400 tracking-tighter mb-1">Precio</p>
+                        <p className={`text-2xl font-black ${menu.textColor}`}>{menu.price}</p>
+                        {menu.priceNote && <p className="text-xs text-slate-500 mt-1">{menu.priceNote}</p>}
+                      </div>
+                      <motion.button whileHover={{ rotate: 90 }} whileTap={{ scale: 0.98 }} type="button" onClick={() => setSelectedLunchMenu(menu)} aria-label="Ver detalles" className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg ${menu.bg}`}><ChevronRight size={24} /></motion.button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          ) : (
+          <>
+          <div className="flex flex-col gap-2 md:flex-row md:flex-wrap md:justify-center md:p-1.5 md:bg-white md:rounded-full md:shadow-inner md:max-w-full md:mx-auto md:border md:border-slate-200 mb-12">
+            {BANQUETERIA_TAB_IDS.map((tabId) => (
+              <button key={tabId} type="button" onClick={() => setActiveBanqueteriaTab(tabId)} className={`relative w-full md:flex-1 md:min-w-0 py-3.5 px-4 md:py-3 md:px-3 rounded-2xl md:rounded-full text-xs font-black uppercase tracking-wide md:tracking-widest transition-all z-10 text-left md:text-center ${activeBanqueteriaTab === tabId ? 'text-white bg-black shadow-lg md:bg-transparent' : 'text-slate-600 bg-white border border-slate-200 hover:border-slate-300 md:border-0 md:bg-transparent md:text-slate-400 md:hover:text-slate-600'}`}>
+                <span className="block break-words">{BANQUETERIA_TAB_LABELS[tabId] ?? tabId}</span>
+                {activeBanqueteriaTab === tabId && <motion.div layoutId="tab-bg-t2" className="absolute inset-0 bg-black rounded-2xl md:rounded-full -z-10 shadow-lg hidden md:block" transition={{ type: "spring", bounce: 0.2, duration: 0.6 }} />}
+              </button>
+            ))}
+          </div>
           <AnimatePresence mode="wait">
-            {activeTab === 'banqueteria' ? (
-              <motion.div key="gala" initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 50 }} transition={{ duration: motionDuration }} className="bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-slate-100">
-                <div className="bg-slate-50 p-16 text-center border-b border-slate-100 relative">
+            {activeBanqueteriaTab === 'cocteleria' ? (
+              <motion.div key="cocteleria" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: motionDuration }} className="bg-white rounded-[3rem] shadow-2xl border border-slate-100 p-6 sm:p-8 md:p-16">
+                <div className="text-center mb-8 md:mb-12">
+                  <h3 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight uppercase mb-2 break-words">Menú de Coctelería y Precios</h3>
+                  <p className="text-slate-500 text-sm">{COCTELERIA_CONTACT}</p>
+                </div>
+                <div className="space-y-10">
+                  {COCTELERIA_CATEGORIES.map((cat, ci) => (
+                    <div key={ci}>
+                      <h4 className="text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase border-b border-slate-100 pb-3 mb-4">{cat.name}</h4>
+                      <ul className="space-y-3">
+                        {cat.items.map((item, ii) => (
+                          <li key={ii} className="flex flex-wrap justify-between items-baseline gap-2 text-sm">
+                            <span className="text-slate-600 font-light">{item.name}</span>
+                            <span className="font-black text-red-600 shrink-0">{item.price}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+                <p className="mt-12 pt-8 border-t border-slate-100 text-slate-500 text-sm text-center">{COCTELERIA_FOOTER}</p>
+              </motion.div>
+            ) : currentGalaMenu && galaMenuRecord ? (
+              <motion.div key={currentGalaMenu.id} initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 50 }} transition={{ duration: motionDuration }} className="bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-slate-100">
+                <div className="bg-slate-50 p-6 sm:p-12 md:p-16 text-center border-b border-slate-100 relative">
                   <div className="absolute top-10 left-1/2 -translate-x-1/2 opacity-5"><ChefHat size={120} /></div>
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="flex justify-center mb-6 relative z-10">
                     <div className="relative w-16 h-10">
@@ -210,13 +261,13 @@ const Template2 = () => {
                       <div className="absolute right-0 w-6 h-6 bg-black transform rotate-45 rounded-sm shadow-md" />
                     </div>
                   </motion.div>
-                  <h3 className="text-4xl font-light tracking-[0.4em] uppercase mb-4 relative z-10">Menú Gala</h3>
-                  <p className="text-slate-400 font-serif italic text-lg">La distinción de un servicio integral</p>
+                  <h3 className="text-xl sm:text-2xl md:text-4xl font-light tracking-[0.15em] sm:tracking-[0.3em] md:tracking-[0.4em] uppercase mb-4 relative z-10 break-words px-2">{currentGalaMenu.title}</h3>
+                  {currentGalaMenu.subtitle && <p className="text-slate-400 font-serif italic text-sm sm:text-base md:text-lg">{currentGalaMenu.subtitle}</p>}
                 </div>
-                <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="p-16 grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12">
-                  {Object.entries(galaMenu).map(([key, items]) => (
+                <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="p-5 sm:p-10 md:p-16 grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 md:gap-12">
+                  {Object.entries(galaMenuRecord).map(([key, items]) => (
                     <motion.div key={key} variants={itemVariants}>
-                      <h4 className="font-bold text-[10px] tracking-[0.3em] uppercase mb-8 border-b border-slate-100 pb-3 flex justify-between items-center capitalize">{key} <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" /></h4>
+                      <h4 className="font-bold text-[10px] tracking-[0.2em] sm:tracking-[0.3em] uppercase mb-6 md:mb-8 border-b border-slate-100 pb-3 flex justify-between items-center gap-2 break-words"><span className="min-w-0">{key}</span> <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse shrink-0" /></h4>
                       <ul className="space-y-4">
                         {items.map((item, i) => (
                           <li key={i} className="flex items-start gap-3 group cursor-default">
@@ -232,19 +283,11 @@ const Template2 = () => {
                   <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center lg:text-left">
                     <div>
                       <p className="text-xs opacity-50 uppercase tracking-[0.2em] mb-2">Valor por persona</p>
-                      <div className="flex items-baseline gap-2 justify-center lg:justify-start"><span className="text-4xl font-black">$23.000</span><span className="text-lg font-light opacity-30">CLP</span></div>
+                      <div className="flex items-baseline gap-2 justify-center lg:justify-start"><span className="text-4xl font-black">{currentGalaMenu.price}</span></div>
                     </div>
                     <div>
                       <p className="text-xs font-bold text-red-400 uppercase mb-1">Servicio incluye</p>
-                      <p className="text-[10px] opacity-80">Mesas y sillas (10 personas); Loza; Garzones; Mantelería; Cristalería; Cubiertos.</p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold text-red-400 uppercase mb-1">Condiciones</p>
-                      <p className="text-[10px] opacity-80">Reserva con 50% del total. Abonos no devueltos, solo reagendar. Mínimo 80 personas.</p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold text-red-400 uppercase mb-1">Servicios adicionales</p>
-                      <p className="text-[10px] opacity-80">Robot led / Dj y amplificación / Cámara 360. Valor con adicionales: $30.000 por persona.</p>
+                      <p className="text-[10px] opacity-80">{currentGalaMenu.serviceIncludes}</p>
                     </div>
                   </div>
                   <div className="flex justify-center">
@@ -252,35 +295,10 @@ const Template2 = () => {
                   </div>
                 </div>
               </motion.div>
-            ) : (
-              <motion.div key="lunch" initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -50 }} transition={{ duration: motionDuration }} className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                {lunchMenus.map((menu, idx) => (
-                  <motion.div key={idx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} whileHover={{ y: -10 }} className={`bg-white rounded-[2rem] shadow-xl border-b-[12px] ${menu.color} overflow-hidden group transition-all duration-300`}>
-                    <div className={`${menu.bg} p-8 text-white text-center relative overflow-hidden`}>
-                      <motion.div initial={{ opacity: 0.1 }} whileHover={{ scale: 1.5, opacity: 0.2 }} className="absolute -right-4 -bottom-4"><Utensils size={80} /></motion.div>
-                      <h3 className="font-black text-xl tracking-tight leading-tight relative z-10 uppercase italic">{menu.title}</h3>
-                    </div>
-                    <div className="p-8 space-y-8">
-                      {menu.items.map((item, i) => (
-                        <div key={i}>
-                          <p className="text-sm text-slate-600 font-medium leading-relaxed group-hover:text-black transition-colors">{item}</p>
-                          {i < menu.items.length - 1 && <hr className="mt-6 border-slate-50" />}
-                        </div>
-                      ))}
-                      <div className="pt-6 mt-6 border-t border-slate-50 flex justify-between items-end">
-                        <div>
-                          <p className="text-[9px] uppercase font-black text-slate-400 tracking-tighter mb-1">Valor Unitario</p>
-                          <p className={`text-2xl font-black ${menu.textColor}`}>{menu.price}</p>
-                          {menu.priceNote && <p className="text-xs text-slate-500 mt-1">{menu.priceNote}</p>}
-                        </div>
-                        <motion.button whileHover={{ rotate: 90 }} whileTap={{ scale: 0.98 }} type="button" onClick={() => setSelectedLunchMenu(menu)} aria-label="Ver detalles del menú" className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg ${menu.bg}`}><ChevronRight size={24} /></motion.button>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </motion.div>
-            )}
+            ) : null}
           </AnimatePresence>
+          </>
+          )}
         </div>
       </section>
 
@@ -289,8 +307,8 @@ const Template2 = () => {
           <motion.div className="max-w-6xl mx-auto bg-slate-50 rounded-[3rem] shadow-xl border border-slate-100 overflow-hidden flex flex-col md:flex-row">
             <div className="md:w-2/5 bg-slate-900 text-slate-300 p-8 md:p-12 lg:p-16 space-y-8 md:space-y-12">
               <div className="space-y-4">
-                <h3 className="text-2xl md:text-3xl font-black tracking-tight uppercase text-white">Hablemos de tu evento</h3>
-                <p className="text-slate-400 font-light text-sm tracking-wide">Nuestro equipo de asesores está listo para dar vida a tus ideas.</p>
+                <h3 className="text-2xl md:text-3xl font-black tracking-tight uppercase text-white">{serviceLine === 'cocinería' ? 'Hablemos de tu pedido' : 'Hablemos de tu evento'}</h3>
+                <p className="text-slate-400 font-light text-sm tracking-wide">{serviceLine === 'cocinería' ? 'Consultas de menú, pedidos y envíos. Estamos para ayudarte.' : 'Nuestro equipo de asesores está listo para dar vida a tus ideas.'}</p>
               </div>
               <div className="space-y-6">
                 {[
@@ -329,10 +347,21 @@ const Template2 = () => {
                   <label htmlFor="t2-service" className="block text-[10px] uppercase tracking-[0.2em] font-black text-slate-400 mb-2">Tipo de Servicio</label>
                   <select id="t2-service" className="w-full py-3.5 px-4 bg-white border border-slate-200 rounded-2xl focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all text-sm font-medium cursor-pointer appearance-none">
                     <option value="">Seleccione una opción</option>
-                    <option>Banquetería Gala</option>
-                    <option>Almuerzo Corporativo</option>
-                    <option>Matrimonio</option>
-                    <option>Otro Evento Social</option>
+                    {serviceLine === 'cocinería' ? (
+                      <>
+                        <option value="menu-ejecutivo">Menú ejecutivo (almuerzo)</option>
+                        <option value="menu-bebestible-envio">Menú con bebestible y envío</option>
+                        <option value="empanadas">Empanadas / Comidas temporales</option>
+                        <option value="otro">Otro</option>
+                      </>
+                    ) : (
+                      <>
+                        <option>Banquetería Gala</option>
+                        <option>Almuerzo Corporativo</option>
+                        <option>Matrimonio</option>
+                        <option>Otro Evento Social</option>
+                      </>
+                    )}
                   </select>
                 </div>
                 <div className="relative">
@@ -355,7 +384,7 @@ const Template2 = () => {
                 <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-black font-black">D</div>
                 <span className="text-2xl font-black tracking-tighter uppercase italic">D'Areli</span>
               </div>
-              <p className="max-w-md text-sm font-light leading-relaxed mb-8 text-slate-500">La gastronomía es el lenguaje del cuidado. En cada plato ponemos nuestra reputación y pasión para asegurar que su evento sea, sencillamente, perfecto.</p>
+              <p className="max-w-md text-sm font-light leading-relaxed mb-8 text-slate-500">{serviceLine === 'cocinería' ? "En cada almuerzo y pedido ponemos la misma calidad y cuidado. D'Areli Cocinería — sabor y nutrición para tu día a día." : "La gastronomía es el lenguaje del cuidado. En cada plato ponemos nuestra reputación y pasión para asegurar que su evento sea, sencillamente, perfecto."}</p>
               <div className="flex gap-4">
                 <motion.a href="#" target="_blank" rel="noopener noreferrer" whileHover={{ y: -5, backgroundColor: '#fff', color: '#000' }} className="w-12 h-12 rounded-2xl border border-slate-800 flex items-center justify-center transition-all text-slate-400" aria-label="Instagram"><Instagram size={20} /></motion.a>
                 <motion.a href="#" target="_blank" rel="noopener noreferrer" whileHover={{ y: -5, backgroundColor: '#fff', color: '#000' }} className="w-12 h-12 rounded-2xl border border-slate-800 flex items-center justify-center transition-all text-slate-400" aria-label="Facebook"><Facebook size={20} /></motion.a>
@@ -374,7 +403,7 @@ const Template2 = () => {
             </div>
           </div>
           <div className="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] uppercase tracking-[0.2em] font-bold">
-            <p>&copy; 2026 D&apos;Areli Banquetería - Calidad Superior</p>
+            <p>&copy; 2026 D&apos;Areli {serviceLine === 'cocinería' ? 'Cocinería' : 'Banquetería'} - Calidad Superior</p>
             <p className="opacity-30">Una empresa de Grupo D&apos;Areli. Web diseñada y desarrollada por <a href="https://charlideas.vercel.app/" target="_blank" rel="noopener noreferrer" className="underline hover:text-slate-300 transition-colors">Charl!deas</a>.</p>
           </div>
         </div>

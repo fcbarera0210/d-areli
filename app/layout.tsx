@@ -3,8 +3,8 @@ import { Suspense } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "D'Areli Banquetería - Elegir diseño",
-  description: "Selecciona el diseño de la web para D'Areli Banquetería.",
+  title: "D'Areli - Banquetería y Cocinería",
+  description: "D'Areli: banquetería para eventos y cocinería con almuerzos individuales tipo menú ejecutivo. Romeral, Región del Maule, Chile.",
 };
 
 export default function RootLayout({
