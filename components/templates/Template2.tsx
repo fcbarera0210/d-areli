@@ -245,7 +245,7 @@ const Template2 = ({ serviceLine, onChangeServiceLine }: Template2Props) => {
                           Temporal
                         </span>
                       </div>
-                      <div className={`${menu.bg} p-5 sm:p-8 text-white text-center relative overflow-hidden`}>
+                      <div className={`${menu.bg} p-5 pr-20 sm:p-8 sm:pr-24 text-white text-center relative overflow-hidden`}>
                         <motion.div initial={{ opacity: 0.1 }} whileHover={{ scale: 1.5, opacity: 0.2 }} className="absolute -right-4 -bottom-4"><Utensils size={80} /></motion.div>
                         <h3 className="font-black text-base sm:text-lg md:text-xl tracking-tight leading-snug relative z-10 uppercase italic break-words">{menu.title}</h3>
                       </div>

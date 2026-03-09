@@ -257,7 +257,7 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
                           Temporal
                         </span>
                       </div>
-                      <div className={`${menu.bg} p-5 sm:p-8 text-white text-center relative overflow-hidden`}>
+                      <div className={`${menu.bg} p-5 pr-20 sm:p-8 sm:pr-24 text-white text-center relative overflow-hidden`}>
                         <motion.div initial={{ opacity: 0.1 }} whileHover={{ scale: 1.5, opacity: 0.2 }} className="absolute -right-4 -bottom-4">
                           <Image src="/SVG/Recurso 3.svg" alt="" width={80} height={80} className="w-20 h-20 object-contain invert" aria-hidden />
                         </motion.div>
