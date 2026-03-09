@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import {
@@ -13,6 +13,7 @@ import {
   Award,
   Clock,
   ShoppingCart,
+  ChevronUp,
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { CartFloatingButton } from '@/components/CartFloatingButton';
@@ -42,6 +43,12 @@ const BANQUETERIA_TAB_LABELS: Record<string, string> = {
 const HERO_IMAGE_URL = '/areli-cocinando.png';
 const HERO_IMAGE_FALLBACK = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=800';
 const QUIENES_SOMOS_IMAGE = '/areli.png';
+
+const HERO_IMAGES = [
+  '/areli-cocinando.png',
+  'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=800',
+  'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=800',
+];
 
 type GroupMenuSection = { category: string; items: string };
 type GroupMenuItem = {
@@ -110,7 +117,16 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [quoteMenu, setQuoteMenu] = useState<{ id: string; title: string } | null>(null);
   const [heroImgSrc, setHeroImgSrc] = useState(HERO_IMAGE_URL);
+  const [heroCarouselIndex, setHeroCarouselIndex] = useState(0);
   const reducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    if (reducedMotion) return;
+    const id = setInterval(() => {
+      setHeroCarouselIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+    }, 3000);
+    return () => clearInterval(id);
+  }, [reducedMotion]);
   const motionDuration = reducedMotion ? 0.2 : 0.8;
 
   const fadeInUp = {
@@ -162,7 +178,7 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
         </AnimatePresence>
       </nav>
 
-      <section id="inicio" className="relative h-screen flex items-center overflow-hidden">
+      <section id="inicio" className="relative h-screen flex items-end lg:items-center overflow-hidden">
         {/* Fondo: en móvil imagen + overlay; en lg blobs */}
         <div className="absolute inset-0 z-0 bg-neutral-100">
           {/* Blobs solo en desktop (mejor performance en móvil) */}
@@ -171,10 +187,10 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
           {/* Móvil/tablet: imagen de fondo + overlay para legibilidad */}
           <div className="absolute inset-0 lg:hidden">
             <Image src={heroImgSrc} alt="" fill className="object-cover grayscale-[0.15]" sizes="100vw" priority onError={() => setHeroImgSrc(HERO_IMAGE_FALLBACK)} />
-            <div className="absolute inset-0 bg-black/55" aria-hidden />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" aria-hidden />
           </div>
         </div>
-        <div className="container mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="container mx-auto px-6 pb-8 lg:pb-0 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-end lg:items-center">
           <motion.div initial={{ opacity: 0, x: reducedMotion ? 0 : -60 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: reducedMotion ? 0.2 : 1, ease: "easeOut" }} className="space-y-8">
             <h1 className="text-4xl sm:text-5xl lg:text-[4rem] font-extrabold tracking-tighter leading-[0.95] break-words text-white lg:text-neutral-900">
               D&apos;ARELI <br /><span className="text-neutral-200 lg:text-neutral-400 font-light italic">GASTRONÓMICO</span>
@@ -190,7 +206,18 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
           <motion.div initial={{ opacity: 0, scale: reducedMotion ? 1 : 0.95, y: reducedMotion ? 0 : 40 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: reducedMotion ? 0.2 : 1.2, ease: "easeOut", delay: reducedMotion ? 0 : 0.2 }} className="hidden lg:block relative group will-change-transform">
             <div className="absolute -inset-4 border border-neutral-200 z-0 hidden lg:block template1-animate-border" aria-hidden />
             <div className="aspect-[4/5] relative bg-neutral-200 shadow-2xl overflow-hidden z-10">
-              <Image src={heroImgSrc} alt="Alta Gastronomía Gourmet" fill className="object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105" sizes="(max-width: 1023px) 90vw, 800px" onError={() => setHeroImgSrc(HERO_IMAGE_FALLBACK)} />
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={heroCarouselIndex}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="absolute inset-0"
+                >
+                  <Image src={HERO_IMAGES[heroCarouselIndex]} alt="Alta Gastronomía Gourmet" fill className="object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-[1.15]" sizes="(max-width: 1023px) 90vw, 800px" />
+                </motion.div>
+              </AnimatePresence>
               <div className="absolute bottom-0 left-0 right-0 p-10 bg-gradient-to-t from-black/90 via-black/40 to-transparent text-white">
                 <motion.div initial={{ width: 0 }} whileInView={{ width: 48 }} transition={{ delay: 0.5, duration: motionDuration }} className="h-1 bg-white mb-6" />
                 <span className="text-4xl font-serif italic tracking-wide block mb-2">Arte Culinario</span>
@@ -390,6 +417,16 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
               </motion.div>
             ) : null}
           </AnimatePresence>
+          <div className="mt-8 flex justify-center sm:hidden">
+            <button
+              type="button"
+              onClick={() => document.getElementById('servicios')?.scrollIntoView({ behavior: 'smooth' })}
+              className="min-h-[44px] px-6 py-3 text-[10px] uppercase tracking-[0.2em] font-bold text-neutral-600 hover:text-black border border-neutral-200 hover:border-neutral-400 transition-all flex items-center gap-2"
+            >
+              <ChevronUp className="w-4 h-4" aria-hidden />
+              Volver al menú
+            </button>
+          </div>
           </>
           )}
         </div>
@@ -398,7 +435,7 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
       <section id="quienes-somos" className="py-28 bg-neutral-900 text-white overflow-hidden relative">
         <div className="container mx-auto px-6 grid md:grid-cols-2 gap-20 items-center">
           <motion.div {...fadeInUp} className="space-y-10">
-            <h2 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-black tracking-tighter uppercase leading-none">{serviceLine === 'cocinería' ? 'Calidad en cada ' : 'Excelencia en '}<br /><span className="text-neutral-500 font-light italic">{serviceLine === 'cocinería' ? 'Almuerzo' : 'Cada Detalle'}</span></h2>
+            <h2 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-black tracking-tighter uppercase leading-none">Calidad en cada <br /><span className="text-neutral-500 font-light italic">servicio</span></h2>
             <div className="w-20 h-1 bg-white"></div>
             <div className="space-y-8 text-neutral-400 font-light leading-relaxed text-base md:text-lg">
               <p>Soy Areli, y D'Areli es el resultado de más de 17 años dedicados a perfeccionar el arte de la gastronomía. Mi camino comenzó en Chile, donde durante 15 años forjé mi identidad en la cocina local, para luego expandir mis horizontes con dos años de especialización en España.</p>
@@ -415,7 +452,7 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
           </motion.div>
           <motion.div initial={{ opacity: 0, x: reducedMotion ? 0 : 60 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: motionDuration, ease: "easeOut" }} className="relative">
             <div className="aspect-square bg-neutral-800 relative overflow-hidden group">
-              <Image src={QUIENES_SOMOS_IMAGE} alt="Areli Sire, maestro de cocina" fill className="object-cover group-hover:scale-105 transition-transform duration-1000" sizes="(max-width: 767px) 100vw, 50vw" />
+              <Image src={QUIENES_SOMOS_IMAGE} alt="Areli Sire, maestro de cocina" fill className="object-cover group-hover:scale-[1.15] transition-transform duration-1000" sizes="(max-width: 767px) 100vw, 50vw" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" aria-hidden />
               <div className="absolute inset-0 flex items-end justify-center p-4 sm:p-5 md:p-4 lg:p-5 xl:p-8 2xl:p-10">
                 <div className="flex items-start gap-2 sm:gap-3 md:gap-3 lg:gap-4 xl:gap-6 text-left w-full max-w-xl border-4 sm:border-[6px] md:border-8 lg:border-[10px] xl:border-[12px] border-white/5 p-4 sm:p-5 md:p-4 lg:p-5 xl:p-6 2xl:p-8">
