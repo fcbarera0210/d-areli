@@ -1,9 +1,13 @@
 "use client";
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { ChefHat, Utensils, Phone, Mail, MapPin, ChevronRight, Menu, X, Award, Clock, Instagram, Facebook } from 'lucide-react';
+import { ChefHat, Utensils, Phone, Mail, MapPin, ChevronRight, Menu, X, Award, Clock, Instagram, Facebook, ShoppingCart } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
+import { CartFloatingButton } from '@/components/CartFloatingButton';
+import { CartModal } from '@/components/CartModal';
+import { BanqueteriaQuoteModal } from '@/components/BanqueteriaQuoteModal';
 import type { ServiceLine } from '@/app/page';
 import { almuerzosDiarios, comidasTemporales, textoComidasTemporales } from '@/data/cocineria';
 import {
@@ -27,39 +31,12 @@ function galaSectionsToRecord(sections: { category: string; items: string }[]): 
 }
 
 const COCINERIA_COLORS_T2 = ['border-red-500', 'bg-red-500', 'text-red-600', 'border-blue-500', 'bg-blue-500', 'text-blue-600', 'border-amber-500', 'bg-amber-500', 'text-amber-600', 'border-teal-500', 'bg-teal-500', 'text-teal-600'] as const;
-function buildCocineriaCardsT2(): LunchMenuItem[] {
-  const cards: LunchMenuItem[] = [];
-  almuerzosDiarios.forEach((a, i) => {
-    const idx = i % 4;
-    cards.push({
-      title: a.nombre.toUpperCase(),
-      color: COCINERIA_COLORS_T2[idx * 3] as string,
-      bg: COCINERIA_COLORS_T2[idx * 3 + 1] as string,
-      textColor: COCINERIA_COLORS_T2[idx * 3 + 2] as string,
-      items: [a.descripcion],
-      price: a.precio,
-      detailSections: [{ category: 'INCLUYE', items: a.descripcion }],
-    });
-  });
-  comidasTemporales.forEach((e, i) => {
-    const idx = (almuerzosDiarios.length + i) % 4;
-    cards.push({
-      title: e.variedad.toUpperCase(),
-      color: COCINERIA_COLORS_T2[idx * 3] as string,
-      bg: COCINERIA_COLORS_T2[idx * 3 + 1] as string,
-      textColor: COCINERIA_COLORS_T2[idx * 3 + 2] as string,
-      items: [e.descripcion],
-      price: e.precio,
-      detailSections: [{ category: 'DISPONIBILIDAD', items: textoComidasTemporales }, { category: 'DESCRIPCIÓN', items: e.descripcion }],
-    });
-  });
-  return cards;
-}
-const COCINERIA_CARDS_T2 = buildCocineriaCardsT2();
 
 type LunchMenuSection = { category: string; items: string };
 type LunchMenuItem = {
+  id: string;
   title: string;
+  nombre: string;
   color: string;
   bg: string;
   textColor: string;
@@ -67,7 +44,47 @@ type LunchMenuItem = {
   price: string;
   priceNote?: string;
   detailSections: LunchMenuSection[];
+  isTemporal?: boolean;
 };
+
+function buildCocineriaAlmuerzosT2(): LunchMenuItem[] {
+  return almuerzosDiarios.map((a, i) => {
+    const idx = i % 4;
+    return {
+      id: a.id,
+      title: a.nombre.toUpperCase(),
+      nombre: a.nombre,
+      color: COCINERIA_COLORS_T2[idx * 3] as string,
+      bg: COCINERIA_COLORS_T2[idx * 3 + 1] as string,
+      textColor: COCINERIA_COLORS_T2[idx * 3 + 2] as string,
+      items: [a.descripcion],
+      price: a.precio,
+      detailSections: [{ category: 'INCLUYE', items: a.descripcion }],
+      isTemporal: false,
+    };
+  });
+}
+
+function buildCocineriaEmpanadasT2(): LunchMenuItem[] {
+  return comidasTemporales.map((e, i) => {
+    const idx = (almuerzosDiarios.length + i) % 4;
+    return {
+      id: e.id,
+      title: e.variedad.toUpperCase(),
+      nombre: e.variedad,
+      color: COCINERIA_COLORS_T2[idx * 3] as string,
+      bg: COCINERIA_COLORS_T2[idx * 3 + 1] as string,
+      textColor: COCINERIA_COLORS_T2[idx * 3 + 2] as string,
+      items: [e.descripcion],
+      price: e.precio,
+      detailSections: [{ category: 'DISPONIBILIDAD', items: textoComidasTemporales }, { category: 'DESCRIPCIÓN', items: e.descripcion }],
+      isTemporal: true,
+    };
+  });
+}
+
+const COCINERIA_ALMUERZOS_T2 = buildCocineriaAlmuerzosT2();
+const COCINERIA_EMPANADAS_T2 = buildCocineriaEmpanadasT2();
 
 const getFadeInSection = (duration: number) => ({
   hidden: { opacity: 0, y: 30 },
@@ -89,23 +106,13 @@ const QUIENES_SOMOS_IMAGE = '/areli.png';
 type Template2Props = { serviceLine: ServiceLine; onChangeServiceLine: (linea: ServiceLine) => void };
 
 const Template2 = ({ serviceLine, onChangeServiceLine }: Template2Props) => {
+  const { addItem } = useCart();
   const [activeBanqueteriaTab, setActiveBanqueteriaTab] = useState(BANQUETERIA_TAB_IDS[0]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedLunchMenu, setSelectedLunchMenu] = useState<LunchMenuItem | null>(null);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [quoteMenu, setQuoteMenu] = useState<{ id: string; title: string } | null>(null);
   const reducedMotion = useReducedMotion();
   const motionDuration = reducedMotion ? 0.2 : 0.8;
-
-  const scrollToServicios = () => {
-    document.getElementById('servicios')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const closeLunchModal = useCallback(() => setSelectedLunchMenu(null), []);
-  useEffect(() => {
-    if (!selectedLunchMenu) return;
-    const onEscape = (e: KeyboardEvent) => { if (e.key === 'Escape') closeLunchModal(); };
-    window.addEventListener('keydown', onEscape);
-    return () => window.removeEventListener('keydown', onEscape);
-  }, [selectedLunchMenu, closeLunchModal]);
 
   const currentGalaMenu = BANQUETERIA_GALA_MENUS.find((m) => m.id === activeBanqueteriaTab);
   const galaMenuRecord = currentGalaMenu ? galaSectionsToRecord(currentGalaMenu.sections) : null;
@@ -195,32 +202,74 @@ const Template2 = ({ serviceLine, onChangeServiceLine }: Template2Props) => {
             </p>
           </motion.div>
             {serviceLine === 'cocinería' ? (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {COCINERIA_CARDS_T2.map((menu, idx) => (
-                <motion.div key={idx} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.08 }} whileHover={{ y: -10 }} className={`bg-white rounded-[2rem] shadow-xl border-b-[12px] ${menu.color} overflow-hidden group transition-all duration-300`}>
-                  <div className={`${menu.bg} p-5 sm:p-8 text-white text-center relative overflow-hidden`}>
-                    <motion.div initial={{ opacity: 0.1 }} whileHover={{ scale: 1.5, opacity: 0.2 }} className="absolute -right-4 -bottom-4"><Utensils size={80} /></motion.div>
-                    <h3 className="font-black text-base sm:text-lg md:text-xl tracking-tight leading-snug relative z-10 uppercase italic break-words">{menu.title}</h3>
-                  </div>
-                  <div className="p-8 space-y-8">
-                    {menu.items.map((item, i) => (
-                      <div key={i}>
-                        <p className="text-sm text-slate-600 font-medium leading-relaxed group-hover:text-black transition-colors">{item}</p>
-                        {i < menu.items.length - 1 && <hr className="mt-6 border-slate-50" />}
+            <div className="space-y-16">
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+                <h3 className="text-xl md:text-2xl font-black tracking-tight text-slate-800 border-b border-slate-200 pb-3">Almuerzos del día</h3>
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {COCINERIA_ALMUERZOS_T2.map((menu, idx) => (
+                    <motion.div key={menu.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.08 }} whileHover={{ y: -10 }} className={`bg-white rounded-[2rem] shadow-xl border-b-[12px] ${menu.color} overflow-hidden group transition-all duration-300`}>
+                      <div className={`${menu.bg} p-5 sm:p-8 text-white text-center relative overflow-hidden`}>
+                        <motion.div initial={{ opacity: 0.1 }} whileHover={{ scale: 1.5, opacity: 0.2 }} className="absolute -right-4 -bottom-4"><Utensils size={80} /></motion.div>
+                        <h3 className="font-black text-base sm:text-lg md:text-xl tracking-tight leading-snug relative z-10 uppercase italic break-words">{menu.title}</h3>
                       </div>
-                    ))}
-                    <div className="pt-6 mt-6 border-t border-slate-50 flex justify-between items-end">
-                      <div>
-                        <p className="text-[9px] uppercase font-black text-slate-400 tracking-tighter mb-1">Precio</p>
-                        <p className={`text-2xl font-black ${menu.textColor}`}>{menu.price}</p>
-                        {menu.priceNote && <p className="text-xs text-slate-500 mt-1">{menu.priceNote}</p>}
+                      <div className="p-8 space-y-8">
+                        {menu.items.map((item, i) => (
+                          <div key={i}>
+                            <p className="text-sm text-slate-600 font-medium leading-relaxed group-hover:text-black transition-colors">{item}</p>
+                            {i < menu.items.length - 1 && <hr className="mt-6 border-slate-50" />}
+                          </div>
+                        ))}
+                        <div className="pt-6 mt-6 border-t border-slate-50 flex justify-between items-end gap-2">
+                          <div>
+                            <p className="text-[9px] uppercase font-black text-slate-400 tracking-tighter mb-1">Precio</p>
+                            <p className={`text-2xl font-black ${menu.textColor}`}>{menu.price}</p>
+                            {menu.priceNote && <p className="text-xs text-slate-500 mt-1">{menu.priceNote}</p>}
+                          </div>
+                          <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} type="button" onClick={() => addItem({ id: menu.id, nombre: menu.nombre, precio: menu.price, isTemporal: !!menu.isTemporal })} aria-label="Agregar al carrito" className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg ${menu.bg}`}><ShoppingCart size={24} /></motion.button>
+                        </div>
                       </div>
-                      <motion.button whileHover={{ rotate: 90 }} whileTap={{ scale: 0.98 }} type="button" onClick={() => setSelectedLunchMenu(menu)} aria-label="Ver detalles" className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg ${menu.bg}`}><ChevronRight size={24} /></motion.button>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="space-y-8">
+                <h3 className="text-xl md:text-2xl font-black tracking-tight text-slate-800 border-b border-slate-200 pb-3">
+                  Exclusivos del fin de semana
+                </h3>
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {COCINERIA_EMPANADAS_T2.map((menu, idx) => (
+                    <motion.div key={menu.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: (COCINERIA_ALMUERZOS_T2.length + idx) * 0.08 }} whileHover={{ y: -10 }} className={`bg-white rounded-[2rem] shadow-xl border-b-[12px] ${menu.color} overflow-hidden group transition-all duration-300 relative`}>
+                      <div className="absolute top-3 right-3 z-10">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-amber-500 text-white rounded-full shadow-sm" title="Disponibilidad limitada">
+                          <Clock className="w-2.5 h-2.5" aria-hidden />
+                          Temporal
+                        </span>
+                      </div>
+                      <div className={`${menu.bg} p-5 sm:p-8 text-white text-center relative overflow-hidden`}>
+                        <motion.div initial={{ opacity: 0.1 }} whileHover={{ scale: 1.5, opacity: 0.2 }} className="absolute -right-4 -bottom-4"><Utensils size={80} /></motion.div>
+                        <h3 className="font-black text-base sm:text-lg md:text-xl tracking-tight leading-snug relative z-10 uppercase italic break-words">{menu.title}</h3>
+                      </div>
+                      <div className="p-8 space-y-8">
+                        {menu.items.map((item, i) => (
+                          <div key={i}>
+                            <p className="text-sm text-slate-600 font-medium leading-relaxed group-hover:text-black transition-colors">{item}</p>
+                            {i < menu.items.length - 1 && <hr className="mt-6 border-slate-50" />}
+                          </div>
+                        ))}
+                        <div className="pt-6 mt-6 border-t border-slate-50 flex justify-between items-end gap-2">
+                          <div>
+                            <p className="text-[9px] uppercase font-black text-slate-400 tracking-tighter mb-1">Precio</p>
+                            <p className={`text-2xl font-black ${menu.textColor}`}>{menu.price}</p>
+                            {menu.priceNote && <p className="text-xs text-slate-500 mt-1">{menu.priceNote}</p>}
+                          </div>
+                          <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} type="button" onClick={() => addItem({ id: menu.id, nombre: menu.nombre, precio: menu.price, isTemporal: !!menu.isTemporal })} aria-label="Agregar al carrito" className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg ${menu.bg}`}><ShoppingCart size={24} /></motion.button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            </div>
           ) : (
           <>
           <div className="flex flex-col gap-2 md:flex-row md:flex-wrap md:justify-center md:p-1.5 md:bg-white md:rounded-full md:shadow-inner md:max-w-full md:mx-auto md:border md:border-slate-200 mb-12">
@@ -295,7 +344,7 @@ const Template2 = ({ serviceLine, onChangeServiceLine }: Template2Props) => {
                     </div>
                   </div>
                   <div className="flex justify-center">
-                    <motion.button whileHover={{ scale: 1.05, backgroundColor: "#ef4444" }} type="button" className="bg-white text-black px-12 py-4 rounded-full font-black text-sm uppercase tracking-widest transition-all shadow-xl">Reservar Fecha</motion.button>
+                    <motion.button whileHover={{ scale: 1.05, backgroundColor: "#ef4444" }} type="button" onClick={() => currentGalaMenu && setQuoteMenu({ id: currentGalaMenu.id, title: currentGalaMenu.title })} className="bg-white text-black px-12 py-4 rounded-full font-black text-sm uppercase tracking-widest transition-all shadow-xl">Solicitar presupuesto</motion.button>
                   </div>
                 </div>
               </motion.div>
@@ -353,17 +402,17 @@ const Template2 = ({ serviceLine, onChangeServiceLine }: Template2Props) => {
                     <option value="">Seleccione una opción</option>
                     {serviceLine === 'cocinería' ? (
                       <>
-                        <option value="menu-ejecutivo">Menú ejecutivo (almuerzo)</option>
-                        <option value="menu-bebestible-envio">Menú con bebestible y envío</option>
-                        <option value="empanadas">Empanadas / Comidas temporales</option>
+                        <option value="cocineria">Cocinería (almuerzos, empanadas y más)</option>
                         <option value="otro">Otro</option>
                       </>
                     ) : (
                       <>
-                        <option>Banquetería Gala</option>
-                        <option>Almuerzo Corporativo</option>
-                        <option>Matrimonio</option>
-                        <option>Otro Evento Social</option>
+                        <option value="evento-exclusivo">Menú de Evento Exclusivo</option>
+                        <option value="boda">Menú Completo para Boda</option>
+                        <option value="campestre">Menú Festivo Chileno Campestre</option>
+                        <option value="corporativo">Menú Corporativo</option>
+                        <option value="cocteleria">Coctelería</option>
+                        <option value="otro">Otro evento</option>
                       </>
                     )}
                   </select>
@@ -412,44 +461,21 @@ const Template2 = ({ serviceLine, onChangeServiceLine }: Template2Props) => {
         </div>
       </footer>
 
+      {serviceLine === 'cocinería' && (
+        <>
+          <CartFloatingButton onClick={() => setIsCartOpen(true)} />
+          <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+        </>
+      )}
+
       <AnimatePresence>
-        {selectedLunchMenu && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: reducedMotion ? 0.15 : 0.25 }}
-            className="fixed inset-0 z-[100] flex items-start justify-center p-4 sm:p-6 overflow-y-auto bg-slate-900/95 backdrop-blur-sm"
-            onClick={closeLunchModal}
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300, duration: reducedMotion ? 0.2 : undefined }}
-              className={`relative w-full max-w-[calc(100vw-2rem)] sm:max-w-lg my-4 sm:my-8 bg-white rounded-[2rem] shadow-2xl overflow-hidden border-b-[12px] ${selectedLunchMenu.color} shrink-0`}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className={`h-2 ${selectedLunchMenu.bg}`} aria-hidden />
-              <button type="button" onClick={closeLunchModal} className="absolute top-4 right-4 min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-2xl hover:bg-slate-100 transition-colors z-10" aria-label="Cerrar"><X className="w-6 h-6 text-slate-600" /></button>
-              <div className="p-6 sm:p-10 overflow-y-auto max-h-[calc(100vh-8rem)]">
-                <h3 className="text-2xl font-black tracking-tight uppercase mb-6 pr-12 leading-tight break-words">{selectedLunchMenu.title}</h3>
-                <div className="space-y-6 mb-8">
-                  {selectedLunchMenu.detailSections.map((section, i) => (
-                    <div key={i}>
-                      <h4 className="text-[10px] font-black tracking-[0.2em] uppercase text-slate-400 mb-2 border-b border-slate-100 pb-2">{section.category}</h4>
-                      <p className="text-slate-600 font-light text-sm leading-relaxed">{section.items}</p>
-                    </div>
-                  ))}
-                </div>
-                <div className="pt-6 border-t border-slate-100">
-                  <p className="text-[9px] uppercase font-black text-slate-400 tracking-tighter mb-1">Valor por persona</p>
-                  <p className={`text-2xl font-black ${selectedLunchMenu.textColor}`}>{selectedLunchMenu.price}</p>
-                  {selectedLunchMenu.priceNote && <p className="text-xs text-slate-500 mt-1">{selectedLunchMenu.priceNote}</p>}
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
+        {serviceLine === 'banqueteria' && quoteMenu && (
+          <BanqueteriaQuoteModal
+            key={quoteMenu.id}
+            menuId={quoteMenu.id}
+            menuTitle={quoteMenu.title}
+            onClose={() => setQuoteMenu(null)}
+          />
         )}
       </AnimatePresence>
 

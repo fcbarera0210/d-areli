@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { CartProvider } from "@/context/CartContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,9 +19,11 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className="antialiased">
-        <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-neutral-100">Cargando…</div>}>
-          {children}
-        </Suspense>
+        <CartProvider>
+          <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-neutral-100">Cargando…</div>}>
+            {children}
+          </Suspense>
+        </CartProvider>
       </body>
     </html>
   );
