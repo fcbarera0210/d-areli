@@ -154,7 +154,7 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
         </div>
         <div className="container mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <motion.div initial={{ opacity: 0, x: reducedMotion ? 0 : -60 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: reducedMotion ? 0.2 : 1, ease: "easeOut" }} className="space-y-8">
-            <h1 className="text-5xl lg:text-[4rem] font-extrabold tracking-tighter leading-[0.95] break-words text-white lg:text-neutral-900">
+            <h1 className="text-4xl sm:text-5xl lg:text-[4rem] font-extrabold tracking-tighter leading-[0.95] break-words text-white lg:text-neutral-900">
               D&apos;ARELI <br /><span className="text-neutral-200 lg:text-neutral-400 font-light italic">GASTRONÓMICO</span>
             </h1>
             <p className="text-lg lg:text-xl text-neutral-200 lg:text-neutral-600 max-w-md leading-relaxed font-light">
@@ -219,7 +219,7 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
                 onClick={() => setActiveBanqueteriaTab(tabId)}
                 className={`relative w-full sm:w-auto min-h-[48px] sm:min-h-[44px] flex items-center justify-center px-4 py-3 sm:px-6 sm:py-5 text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] sm:tracking-[0.3em] transition-all border border-transparent rounded-lg sm:rounded-none sm:border-b-2 sm:border-transparent ${activeBanqueteriaTab === tabId ? 'text-black bg-neutral-100 sm:bg-transparent border-neutral-200 sm:border-transparent' : 'text-neutral-500 hover:text-neutral-700 hover:bg-neutral-50'} ${activeBanqueteriaTab === tabId ? 'sm:border-b-black border-b-2 border-b-black' : 'sm:border-b-transparent'}`}
               >
-                <span className="pointer-events-none">{BANQUETERIA_TAB_LABELS[tabId] ?? tabId}</span>
+                <span className="pointer-events-none break-words text-center">{BANQUETERIA_TAB_LABELS[tabId] ?? tabId}</span>
                 {activeBanqueteriaTab === tabId && <motion.div layoutId="activeTabUnderline" className="absolute bottom-0 left-0 right-0 h-1 bg-black hidden sm:block" />}
               </button>
             ))}
@@ -228,7 +228,7 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
             {activeBanqueteriaTab === 'cocteleria' ? (
               <motion.div key="cocteleria" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: reducedMotion ? 0.2 : 0.5 }} className="max-w-5xl mx-auto bg-neutral-50 border border-neutral-100 p-8 md:p-16 shadow-2xl">
                 <div className="text-center mb-12">
-                  <h3 className="text-3xl font-black tracking-tight uppercase mb-2">Menú de Coctelería y Precios</h3>
+                  <h3 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight uppercase mb-2 break-words">Menú de Coctelería y Precios</h3>
                   <p className="text-neutral-500 text-sm">{COCTELERIA_CONTACT}</p>
                 </div>
                 <div className="space-y-10">
@@ -276,7 +276,7 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
                       </div>
                     </motion.div>
                   </div>
-                  <h3 className="text-4xl font-black tracking-[0.4em] uppercase">{currentGalaMenu.title}</h3>
+                  <h3 className="text-xl sm:text-2xl md:text-4xl font-black tracking-[0.2em] sm:tracking-[0.3em] md:tracking-[0.4em] uppercase break-words">{currentGalaMenu.title}</h3>
                   {currentGalaMenu.subtitle && <div className="text-neutral-500 font-light italic uppercase tracking-[0.3em] text-sm">{currentGalaMenu.subtitle}</div>}
                 </div>
                 <motion.div variants={staggerContainer} initial="hidden" whileInView="show" viewport={{ once: true }} className="grid md:grid-cols-2 gap-x-16 gap-y-12">
@@ -326,17 +326,17 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
       <section id="quienes-somos" className="py-28 bg-neutral-900 text-white overflow-hidden relative">
         <div className="container mx-auto px-6 grid md:grid-cols-2 gap-20 items-center">
           <motion.div {...fadeInUp} className="space-y-10">
-            <h2 className="text-5xl md:text-6xl font-black tracking-tighter uppercase leading-none">{serviceLine === 'cocinería' ? 'Calidad en cada ' : 'Excelencia en '}<br /><span className="text-neutral-500 font-light italic">{serviceLine === 'cocinería' ? 'Almuerzo' : 'Cada Detalle'}</span></h2>
+            <h2 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-black tracking-tighter uppercase leading-none">{serviceLine === 'cocinería' ? 'Calidad en cada ' : 'Excelencia en '}<br /><span className="text-neutral-500 font-light italic">{serviceLine === 'cocinería' ? 'Almuerzo' : 'Cada Detalle'}</span></h2>
             <div className="w-20 h-1 bg-white"></div>
-            <div className="space-y-8 text-neutral-400 font-light leading-relaxed text-lg">
+            <div className="space-y-8 text-neutral-400 font-light leading-relaxed text-base md:text-lg">
               <p>Soy Areli, y D'Areli es el resultado de más de 17 años dedicados a perfeccionar el arte de la gastronomía. Mi camino comenzó en Chile, donde durante 15 años forjé mi identidad en la cocina local, para luego expandir mis horizontes con dos años de especialización en España.</p>
               <p>Esta trayectoria internacional me permitió fusionar el respeto por el ingrediente de nuestra tierra con técnicas de vanguardia europea. Hoy, vuelco toda esa experiencia en crear eventos corporativos y sociales donde la logística impecable y el sabor excepcional no son solo una promesa, sino mi sello personal en cada bocado.</p>
             </div>
-            <div className="grid grid-cols-3 gap-3 sm:gap-6 pt-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 md:gap-6 pt-6">
               {[{ label: "Años Exp.", val: "+15" }, { label: "Eventos", val: "+1000" }, { label: "Calidad", val: "100%" }].map((stat, i) => (
-                <div key={i} className="text-center p-3 sm:p-6 border border-neutral-800 bg-neutral-800/20 backdrop-blur-sm min-w-0">
-                  <div className="text-lg sm:text-2xl md:text-3xl font-black text-white mb-1 sm:mb-2 truncate" title={stat.val}>{stat.val}</div>
-                  <div className="text-[8px] sm:text-[9px] md:text-[10px] text-neutral-500 uppercase tracking-[0.2em] sm:tracking-[0.3em] font-bold break-words line-clamp-2">{stat.label}</div>
+                <div key={i} className="flex flex-col items-center justify-center p-3 sm:p-4 md:p-6 border border-neutral-800 bg-neutral-800/20 backdrop-blur-sm min-w-0">
+                  <div className="text-base sm:text-sm md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-black text-white mb-0.5 sm:mb-1 md:mb-2 whitespace-nowrap">{stat.val}</div>
+                  <div className="text-xs md:text-[10px] text-neutral-500 uppercase tracking-tight sm:tracking-normal md:tracking-wide font-bold whitespace-nowrap">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -345,10 +345,10 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
             <div className="aspect-square bg-neutral-800 relative overflow-hidden group">
               <Image src={QUIENES_SOMOS_IMAGE} alt="Areli Sire, maestro de cocina" fill className="object-cover group-hover:scale-105 transition-transform duration-1000" sizes="(max-width: 767px) 100vw, 50vw" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" aria-hidden />
-              <div className="absolute inset-0 flex items-end justify-center p-6 sm:p-8 md:p-10">
-                <div className="flex items-start gap-4 sm:gap-6 text-left w-full max-w-xl border-[12px] border-white/5 p-6 sm:p-8">
-                  <Award className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 text-white/60 mt-1" aria-hidden />
-                  <h4 className="text-lg sm:text-xl md:text-2xl font-light italic leading-relaxed text-white">"La cocina es un lenguaje para expresar amor y cuidado por los demás."</h4>
+              <div className="absolute inset-0 flex items-end justify-center p-4 sm:p-5 md:p-4 lg:p-5 xl:p-8 2xl:p-10">
+                <div className="flex items-start gap-2 sm:gap-3 md:gap-3 lg:gap-4 xl:gap-6 text-left w-full max-w-xl border-4 sm:border-[6px] md:border-8 lg:border-[10px] xl:border-[12px] border-white/5 p-4 sm:p-5 md:p-4 lg:p-5 xl:p-6 2xl:p-8">
+                  <Award className="w-8 h-8 sm:w-10 sm:h-10 md:w-9 md:h-9 lg:w-10 lg:h-10 xl:w-12 xl:h-12 2xl:w-14 2xl:h-14 shrink-0 text-white/60 mt-0.5" aria-hidden />
+                  <h4 className="text-sm sm:text-base md:text-base lg:text-lg xl:text-xl 2xl:text-2xl font-light italic leading-relaxed text-white">"La cocina es un lenguaje para expresar amor y cuidado por los demás."</h4>
                 </div>
               </div>
             </div>
@@ -361,7 +361,7 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
           <motion.div {...fadeInUp} className="max-w-6xl mx-auto bg-white shadow-[0_50px_100px_-20px_rgba(0,0,0,0.12)] overflow-hidden flex flex-col md:flex-row border border-neutral-100">
             <div className="md:w-2/5 bg-black text-white p-16 space-y-16">
               <div className="space-y-4">
-                <h3 className="text-3xl font-black tracking-tight uppercase">{serviceLine === 'cocinería' ? 'Hablemos de tu pedido' : 'Hablemos de tu evento'}</h3>
+                <h3 className="text-2xl sm:text-3xl font-black tracking-tight uppercase">{serviceLine === 'cocinería' ? 'Hablemos de tu pedido' : 'Hablemos de tu evento'}</h3>
                 <p className="text-neutral-400 font-light text-sm tracking-wide">{serviceLine === 'cocinería' ? 'Consultas de menú, pedidos y envíos. Estamos para ayudarte.' : 'Nuestro equipo de asesores está listo para dar vida a tus ideas.'}</p>
               </div>
               <div className="space-y-10">
@@ -441,8 +441,8 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
             <motion.div initial={{ scale: 0.9, y: 30, opacity: 0 }} animate={{ scale: 1, y: 0, opacity: 1 }} exit={{ scale: 0.9, y: 30, opacity: 0 }} transition={{ type: "spring", damping: 25, stiffness: 300 }} className="bg-white w-full max-w-3xl my-auto max-h-[calc(100vh-2rem)] flex flex-col shadow-2xl relative overflow-hidden shrink-0" onClick={e => e.stopPropagation()}>
               <div className={`h-3 w-full shrink-0 ${selectedMenu.color}`}></div>
               <button type="button" onClick={() => setSelectedMenu(null)} className="absolute top-4 right-4 sm:top-6 sm:right-6 min-h-[44px] min-w-[44px] flex items-center justify-center p-2.5 hover:bg-neutral-100 rounded-full transition-colors z-10 bg-white/90 sm:bg-transparent" aria-label="Cerrar"><X className="w-6 h-6" /></button>
-              <div className="p-6 sm:p-10 md:p-20 overflow-y-auto min-h-0 flex-1">
-                <h3 className="text-2xl sm:text-4xl font-black tracking-tight uppercase mb-6 sm:mb-10 leading-tight text-center">{selectedMenu.title}</h3>
+              <div className="p-6 sm:p-10 md:p-20 overflow-y-auto min-h-0 flex-1 min-w-0">
+                <h3 className="text-2xl sm:text-4xl font-black tracking-tight uppercase mb-6 sm:mb-10 leading-tight text-center break-words">{selectedMenu.title}</h3>
                 <div className="space-y-6 sm:space-y-8 text-left">
                   {selectedMenu.detailSections.map((section, i) => (
                     <div key={i}>

@@ -48,10 +48,16 @@ export default function Home() {
     [router, template]
   );
 
+  const SHOW_TEMPLATE_SWITCHER = false;
+
   return (
     <>
-      <div className="h-12" aria-hidden />
-      <TemplateSwitcher activeTemplate={template} onChange={handleChangeTemplate} />
+      {SHOW_TEMPLATE_SWITCHER && (
+        <>
+          <div className="h-12" aria-hidden />
+          <TemplateSwitcher activeTemplate={template} onChange={handleChangeTemplate} />
+        </>
+      )}
       {template === 1 ? (
         <Template1 serviceLine={serviceLine} onChangeServiceLine={handleChangeServiceLine} />
       ) : (

@@ -433,7 +433,7 @@ const Template2 = ({ serviceLine, onChangeServiceLine }: Template2Props) => {
               <div className={`h-2 ${selectedLunchMenu.bg}`} aria-hidden />
               <button type="button" onClick={closeLunchModal} className="absolute top-4 right-4 min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-2xl hover:bg-slate-100 transition-colors z-10" aria-label="Cerrar"><X className="w-6 h-6 text-slate-600" /></button>
               <div className="p-6 sm:p-10 overflow-y-auto max-h-[calc(100vh-8rem)]">
-                <h3 className="text-2xl font-black tracking-tight uppercase mb-6 pr-12 leading-tight">{selectedLunchMenu.title}</h3>
+                <h3 className="text-2xl font-black tracking-tight uppercase mb-6 pr-12 leading-tight break-words">{selectedLunchMenu.title}</h3>
                 <div className="space-y-6 mb-8">
                   {selectedLunchMenu.detailSections.map((section, i) => (
                     <div key={i}>
@@ -457,7 +457,7 @@ const Template2 = ({ serviceLine, onChangeServiceLine }: Template2Props) => {
         {isMenuOpen && (
           <motion.div initial={{ opacity: 0, x: '100%' }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: '100%' }} transition={{ type: 'spring', damping: 25, stiffness: reducedMotion ? 400 : 200 }} className="fixed inset-0 z-[60] bg-slate-900 flex flex-col items-center justify-center text-white">
             <button type="button" className="absolute top-8 right-8 text-white/50 hover:text-white transition-colors" onClick={() => setIsMenuOpen(false)}><X size={40} /></button>
-            <nav className="flex flex-col gap-10 text-4xl font-black uppercase italic text-center">
+            <nav className="flex flex-col gap-10 text-2xl sm:text-3xl md:text-4xl font-black uppercase italic text-center">
               {['inicio', 'servicios', 'quienes somos', 'contacto'].map((item, i) => (
                 <motion.a key={item} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * i }} href={`#${item.replace(' ', '-')}`} onClick={() => setIsMenuOpen(false)}>{item}</motion.a>
               ))}
