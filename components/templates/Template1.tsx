@@ -33,7 +33,7 @@ const BANQUETERIA_TAB_LABELS: Record<string, string> = {
   cocteleria: 'Coctelería',
 };
 
-const HERO_IMAGE_URL = 'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&q=80&w=800';
+const HERO_IMAGE_URL = '/areli-cocinando.png';
 const HERO_IMAGE_FALLBACK = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=800';
 const QUIENES_SOMOS_IMAGE = '/areli.png';
 
@@ -271,8 +271,8 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
                       <div className="absolute inset-0 flex items-center justify-center border-2 border-black rounded-full bg-white [backface-visibility:hidden]" aria-hidden>
                         <Utensils className="w-6 h-6" />
                       </div>
-                      <div className="absolute inset-0 flex items-center justify-center border-2 border-black rounded-full bg-white [backface-visibility:hidden] [transform:rotateY(180deg)]" aria-hidden>
-                        <Image src="/SVG/Recurso 3.svg" alt="" width={32} height={32} className="w-8 h-8 object-contain" />
+                      <div className="absolute inset-0 flex items-center justify-center [backface-visibility:hidden] [transform:rotateY(180deg)]" aria-hidden>
+                        <Image src="/SVG/Recurso 3.svg" alt="" width={56} height={56} className="w-full h-full object-contain" />
                       </div>
                     </motion.div>
                   </div>
@@ -329,20 +329,11 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
             <h2 className="text-5xl md:text-6xl font-black tracking-tighter uppercase leading-none">{serviceLine === 'cocinería' ? 'Calidad en cada ' : 'Excelencia en '}<br /><span className="text-neutral-500 font-light italic">{serviceLine === 'cocinería' ? 'Almuerzo' : 'Cada Detalle'}</span></h2>
             <div className="w-20 h-1 bg-white"></div>
             <div className="space-y-8 text-neutral-400 font-light leading-relaxed text-lg">
-              {serviceLine === 'cocinería' ? (
-                <>
-                  <p>D'Areli Gastronómico nace para llevar la misma calidad de nuestra cocina a tu mesa del día a día. Ofrecemos almuerzos individuales tipo menú ejecutivo: ensalada, pan, postre y plato principal, con opción de bebestible y envío.</p>
-                  <p>Utilizamos ingredientes locales y recetas tradicionales chilenas, preparadas con el mismo cuidado que nos distingue en eventos. Cada plato está pensado para nutrir y satisfacer.</p>
-                </>
-              ) : (
-                <>
-                  <p>D'Areli nace de la visión de crear un servicio de banquetería que trascienda lo convencional. Nos especializamos en eventos corporativos y sociales de alto impacto, donde la logística y el sabor se unen a la perfección.</p>
-                  <p>Nuestra cocina combina técnicas de vanguardia con el respeto absoluto por los ingredientes locales, asegurando que cada bocado cuente una historia de calidad y dedicación.</p>
-                </>
-              )}
+              <p>Soy Areli, y D'Areli es el resultado de más de 17 años dedicados a perfeccionar el arte de la gastronomía. Mi camino comenzó en Chile, donde durante 15 años forjé mi identidad en la cocina local, para luego expandir mis horizontes con dos años de especialización en España.</p>
+              <p>Esta trayectoria internacional me permitió fusionar el respeto por el ingrediente de nuestra tierra con técnicas de vanguardia europea. Hoy, vuelco toda esa experiencia en crear eventos corporativos y sociales donde la logística impecable y el sabor excepcional no son solo una promesa, sino mi sello personal en cada bocado.</p>
             </div>
             <div className="grid grid-cols-3 gap-3 sm:gap-6 pt-6">
-              {[{ label: "Años Exp.", val: "10+" }, { label: "Eventos", val: "500+" }, { label: "Calidad", val: "100%" }].map((stat, i) => (
+              {[{ label: "Años Exp.", val: "+15" }, { label: "Eventos", val: "+1000" }, { label: "Calidad", val: "100%" }].map((stat, i) => (
                 <div key={i} className="text-center p-3 sm:p-6 border border-neutral-800 bg-neutral-800/20 backdrop-blur-sm min-w-0">
                   <div className="text-lg sm:text-2xl md:text-3xl font-black text-white mb-1 sm:mb-2 truncate" title={stat.val}>{stat.val}</div>
                   <div className="text-[8px] sm:text-[9px] md:text-[10px] text-neutral-500 uppercase tracking-[0.2em] sm:tracking-[0.3em] font-bold break-words line-clamp-2">{stat.label}</div>
@@ -352,12 +343,12 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
           </motion.div>
           <motion.div initial={{ opacity: 0, x: reducedMotion ? 0 : 60 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: motionDuration, ease: "easeOut" }} className="relative">
             <div className="aspect-square bg-neutral-800 relative overflow-hidden group">
-              <Image src={QUIENES_SOMOS_IMAGE} alt="Areli Sire, maestro de cocina" fill className="object-cover opacity-40 group-hover:opacity-100 transition-opacity duration-1000" sizes="(max-width: 767px) 100vw, 50vw" />
-              <div className="absolute inset-0 flex items-center justify-center p-10 text-center border-[12px] border-white/5 m-10">
-                <div className="space-y-6">
-                  <Award className="w-16 h-16 mx-auto text-white/50" />
-                  <h4 className="text-2xl font-light italic leading-relaxed">"La cocina es un lenguaje para expresar amor y cuidado por los demás."</h4>
-                  <div className="text-[10px] uppercase tracking-[0.5em] text-neutral-500 font-black pt-4">Equipo D'Areli</div>
+              <Image src={QUIENES_SOMOS_IMAGE} alt="Areli Sire, maestro de cocina" fill className="object-cover group-hover:scale-105 transition-transform duration-1000" sizes="(max-width: 767px) 100vw, 50vw" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" aria-hidden />
+              <div className="absolute inset-0 flex items-end justify-center p-6 sm:p-8 md:p-10">
+                <div className="flex items-start gap-4 sm:gap-6 text-left w-full max-w-xl border-[12px] border-white/5 p-6 sm:p-8">
+                  <Award className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 text-white/60 mt-1" aria-hidden />
+                  <h4 className="text-lg sm:text-xl md:text-2xl font-light italic leading-relaxed text-white">"La cocina es un lenguaje para expresar amor y cuidado por los demás."</h4>
                 </div>
               </div>
             </div>
@@ -430,9 +421,8 @@ const Template1 = ({ serviceLine, onChangeServiceLine }: Template1Props) => {
 
       <footer className="bg-neutral-100 py-20 border-t border-neutral-200 text-center">
         <div className="container mx-auto px-6 space-y-12">
-          <div className="flex justify-center items-center gap-3">
-            <Image src="/SVG/Recurso 3.svg" alt="D'Areli Gastronómico" width={40} height={40} className="w-10 h-10 object-contain shrink-0" />
-            <span className="text-2xl font-black tracking-tighter uppercase">D'ARELI <span className="font-light text-neutral-500">GASTRONÓMICO</span></span>
+          <div className="flex justify-center items-center">
+            <Image src="/SVG/Recurso 4.svg" alt="D'Areli Gastronómico" width={240} height={96} className="h-[6.5rem] w-auto object-contain" />
           </div>
           <div className="flex flex-wrap justify-center gap-6 text-[10px] uppercase tracking-[0.4em] font-black text-neutral-400">
             <a href="#inicio" className="min-h-[44px] inline-flex items-center hover:text-black transition-colors">Inicio</a>

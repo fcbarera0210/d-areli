@@ -384,9 +384,8 @@ const Template2 = ({ serviceLine, onChangeServiceLine }: Template2Props) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-16 mb-16">
             <div className="md:col-span-2">
-              <div className="flex items-center gap-2 text-white mb-8">
-                <Image src="/SVG/Recurso 3.svg" alt="D'Areli Gastronómico" width={40} height={40} className="w-10 h-10 object-contain shrink-0 invert" />
-                <span className="text-2xl font-black tracking-tighter uppercase italic">D'Areli</span>
+              <div className="flex items-center mb-8">
+                <Image src="/SVG/Recurso 4.svg" alt="D'Areli Gastronómico" width={240} height={96} className="h-[6.5rem] w-auto object-contain invert" />
               </div>
               <p className="max-w-md text-sm font-light leading-relaxed mb-8 text-slate-500">{serviceLine === 'cocinería' ? "En cada almuerzo y pedido ponemos la misma calidad y cuidado. D'Areli Gastronómico — sabor y nutrición para tu día a día." : "La gastronomía es el lenguaje del cuidado. En cada plato ponemos nuestra reputación y pasión para asegurar que su evento sea, sencillamente, perfecto."}</p>
               <div className="flex gap-4">
